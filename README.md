@@ -1,6 +1,6 @@
 # Google Workspace MCP connector
 
-An MCP server and Claude plugin that connects Claude to **Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Google Analytics 4 and Google Ads**. It runs locally and signs in with your own Google account. Your tokens stay on your machine.
+An MCP server and Claude plugin that connects Claude to **Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Apps Script, Google Analytics 4 and Google Ads**. It runs locally and signs in with your own Google account. Your tokens stay on your machine.
 
 Requires **Node.js 20+**.
 
@@ -29,7 +29,7 @@ Run `node plugin/server/index.mjs` as a stdio MCP server (see "Add it to Claude"
 
 After changing code in `src/`, run `npm run build:plugin` to refresh `plugin/server/`.
 
-## What it can do (110 tools, 7 skills)
+## What it can do (117 tools, 8 skills)
 
 | Service | Tools |
 |---|---|
@@ -40,6 +40,7 @@ After changing code in `src/`, run `npm run build:plugin` to refresh `plugin/ser
 | **Docs** | `docs_create` (from Markdown), `docs_read` (Markdown or indexed structure), `docs_insert_markdown`, `docs_replace_text`, `docs_delete_range`, `docs_insert_table`, `docs_insert_image`, `docs_batch_update` |
 | **Sheets** | `sheets_create`, `sheets_get_info`, `sheets_read`, `sheets_write` (formulas work), `sheets_append_rows`, `sheets_clear`, `sheets_manage_tab`, `sheets_format`, `sheets_add_chart`, **`sheets_analyze`** (per-column stats and group-by summaries), `sheets_batch_update` |
 | **Slides** | `slides_create` (whole deck with layouts, bullets, two columns, speaker notes and images), `slides_read`, `slides_add_slides`, `slides_replace_text`, `slides_set_text`, `slides_set_notes`, `slides_add_image`, `slides_add_text_box`, `slides_manage_slide` (delete/duplicate/move), `slides_get_thumbnail`, `slides_batch_update` |
+| **Apps Script** | `script_create_project` (standalone, or bound to a Sheet/Doc), `script_get_content`, `script_update_files`, `script_list_projects`, `script_deploy`, `script_run` (run a function, get its result or error), `script_logs` |
 | **Google Analytics 4** | `ga_list_properties`, `ga_overview` (users, sessions, engagement, key events, revenue by channel/source/campaign/page/country/device/date…), `ga_run_report` (any dimensions/metrics, filters, period comparison), `ga_realtime`, `ga_get_metadata` |
 | **Google Calendar** | `calendar_list_calendars`, `calendar_list_events` (window + search), `calendar_get_event`, `calendar_create_event` (attendees, Google Meet link, recurrence, reminders), `calendar_update_event` (add/remove guests), `calendar_delete_event`, `calendar_respond` (RSVP), `calendar_quick_add`, `calendar_find_free_time` |
 | **Google Chat** | `chat_list_spaces`, `chat_list_messages` (space or DM), `chat_search_messages`, `chat_send_message` (space, DM by email, thread reply), `chat_list_members` — Google Workspace accounts only |
@@ -48,7 +49,7 @@ After changing code in `src/`, run `npm run build:plugin` to refresh `plugin/ser
 | **Dialogflow** | ES: `dialogflow_get_agent`, `dialogflow_list_intents`, `dialogflow_detect_intent`, `dialogflow_create_intent`, `dialogflow_update_intent`, `dialogflow_delete_intent`; CX: `dialogflow_cx_list_agents`, `dialogflow_cx_list_intents`, `dialogflow_cx_detect_intent` |
 | **Google Ads** | `ads_list_accounts`, `ads_campaign_performance`, `ads_ad_group_performance`, `ads_keyword_performance`, `ads_search_terms`, `ads_ad_performance` (all with cost/conversion and ROAS), `ads_query` (any read-only GAQL), `ads_add_negative_keywords`, `ads_set_status` (pause/enable campaigns, ad groups, ads, keywords), `ads_set_campaign_budget` |
 
-**Skills** (teach Claude the workflows): `setup` (connect Google), `google-workspace` (general), `calendar-scheduling` (meetings and invites), `maps-business-research` (business details and summaries), `google-contacts`, `dialogflow` (build and test bots), `google-ads` (performance reviews, wasted spend, safe changes).
+**Skills** (teach Claude the workflows): `setup` (connect Google), `google-workspace` (general), `calendar-scheduling` (meetings and invites), `maps-business-research` (business details and summaries), `google-contacts`, `dialogflow` (build and test bots), `google-ads` (performance reviews, wasted spend, safe changes), `apps-script` (generate, install and run Apps Script for Google Sheets).
 
 Every tool takes either a file ID or a full Google URL. Create tools take an optional `folderId` so new files land in the right Drive folder.
 
@@ -57,7 +58,7 @@ Every tool takes either a file ID or a full Google URL. Create tools take an opt
 ### 1. Create a Google Cloud OAuth client
 
 1. Go to <https://console.cloud.google.com/> and create (or pick) a project.
-2. **APIs & Services → Library**: enable **Gmail API**, **Google Drive API**, **Google Docs API**, **Google Sheets API**, **Google Slides API**, **Google Calendar API**, **Google Chat API**, **People API**, **Dialogflow API**, **Google Analytics Data API**, **Google Analytics Admin API** and **Google Ads API**. For Maps also enable **Places API (New)**, **Geocoding API** and **Routes API**.
+2. **APIs & Services → Library**: enable **Gmail API**, **Google Drive API**, **Google Docs API**, **Google Sheets API**, **Google Slides API**, **Google Calendar API**, **Google Chat API**, **People API**, **Dialogflow API**, **Apps Script API**, **Google Analytics Data API**, **Google Analytics Admin API** and **Google Ads API**. For Maps also enable **Places API (New)**, **Geocoding API** and **Routes API**.
 3. **APIs & Services → OAuth consent screen** (or "Google Auth Platform"): choose **External**, fill in the app name and your email, and under **Test users** add the Google account(s) you'll sign in with.
 4. **Credentials → Create credentials → OAuth client ID**. Pick the application type **Desktop app**. Download the JSON.
 5. Save the file as:
@@ -83,14 +84,18 @@ npm run auth
 
 Google requires the Chat API to be configured once per Cloud project, even when you only read and send as yourself: **APIs & Services → Google Chat API → Configuration**, fill in an app name, avatar URL and description, and save.
 
-### 2b. Google Maps API key (only for `maps_*` tools)
+### 2b. Apps Script
+
+The signed-in account must turn on **Google Apps Script API** at <https://script.google.com/home/usersettings>. To run a script's functions from Claude (`script_run`), open the script once and set **Project Settings → Google Cloud Platform (GCP) Project** to your OAuth client's project number, run it once to authorize, then deploy it with `script_deploy`. Creating and editing scripts works without these steps.
+
+### 2c. Google Maps API key (only for `maps_*` tools)
 
 Maps Platform uses an **API key** instead of sign-in, and the project must have **billing enabled** (Google includes a monthly free allowance).
 1. **APIs & Services → Credentials → Create credentials → API key.**
 2. Restrict the key to **Places API (New)**, **Geocoding API** and **Routes API**.
 3. Ask Claude to run `google_setup` with `configure_maps`, or create `~/.google-workspace-mcp/maps.json` yourself: `{ "apiKey": "YOUR_KEY" }`. `GOOGLE_MAPS_API_KEY` also works.
 
-### 2c. Google Ads developer token (only for `ads_*` tools)
+### 2d. Google Ads developer token (only for `ads_*` tools)
 
 The Google Ads API needs a **developer token** in addition to sign-in:
 1. Sign in to a Google Ads **manager (MCC)** account that has access to your ad accounts (create one free at <https://ads.google.com/home/tools/manager-accounts/> if needed).
@@ -130,14 +135,14 @@ Restart Claude, then try prompts like:
 
 ## Scopes requested
 
-`gmail.modify` (read, send, label; it **can't** permanently delete mail), `drive`, `documents`, `spreadsheets`, `presentations`, `analytics.readonly` (GA4 is read-only), `adwords` (Google Ads reporting and changes), `calendar` (read and manage events), `chat.spaces.readonly`, `chat.messages`, `chat.memberships.readonly`, `chat.spaces.create` (read and send Chat messages, start DMs), `contacts`, `contacts.other.readonly`, `directory.readonly` (People API), `dialogflow` (Dialogflow agents). Maps uses an API key, not a scope.
+`gmail.modify` (read, send, label; it **can't** permanently delete mail), `drive`, `documents`, `spreadsheets`, `presentations`, `analytics.readonly` (GA4 is read-only), `adwords` (Google Ads reporting and changes), `calendar` (read and manage events), `chat.spaces.readonly`, `chat.messages`, `chat.memberships.readonly`, `chat.spaces.create` (read and send Chat messages, start DMs), `contacts`, `contacts.other.readonly`, `directory.readonly` (People API), `dialogflow` (Dialogflow agents), `script.projects`, `script.deployments`, `script.processes` (Apps Script projects), plus `script.send_mail`, `script.external_request`, `script.scriptapp`, `script.container.ui` so scripts can be run through the API. Maps uses an API key, not a scope.
 
 If you signed in before Analytics/Ads were added, `google_setup` → `status` lists `missingScopes`; run `sign_in` again to grant them.
 
 ## Safety notes
 
 - Destructive tools (`drive_trash`, `drive_update_permission`, `sheets_clear`, `docs_delete_range`, `slides_manage_slide`, and `sheets_manage_tab`) are marked `destructiveHint` so clients can ask before running them. Drive deletes go to the trash, never permanent deletion.
-- Claude Code asks before each tool call unless you allow it. Consider leaving `gmail_send`, `gmail_reply`, `drive_share`, `chat_send_message`, `calendar_create_event`, `calendar_delete_event`, `ads_set_status`, `ads_set_campaign_budget`, `ads_add_negative_keywords`, `contacts_delete` and `dialogflow_delete_intent` on "ask".
+- Claude Code asks before each tool call unless you allow it. Consider leaving `gmail_send`, `gmail_reply`, `drive_share`, `chat_send_message`, `calendar_create_event`, `calendar_delete_event`, `ads_set_status`, `ads_set_campaign_budget`, `ads_add_negative_keywords`, `contacts_delete`, `dialogflow_delete_intent` and `script_run` on "ask".
 - Google Ads changes take effect immediately and affect spend. Both Ads change tools support `validateOnly: true` for a dry run.
 - `token.json` gives access to your account. Keep it private.
 

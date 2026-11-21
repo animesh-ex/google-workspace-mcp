@@ -1,6 +1,6 @@
 # Google Workspace for Claude
 
-Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Google Analytics 4 and Google Ads** (110 tools, 7 skills).
+Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Apps Script, Google Analytics 4 and Google Ads** (117 tools, 8 skills).
 
 - **Gmail:** search, read, send, reply, drafts, labels, attachments (from your computer or Drive).
 - **Drive:** search, organize folders, upload/download, copy/move/rename, trash, and share any file.
@@ -10,10 +10,11 @@ Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Go
 - **Google Contacts:** find anyone's email or phone (contacts, people you've emailed, company directory), add, update and group contacts.
 - **Google Maps:** search businesses, pull every business detail incl. Google's AI summaries and reviews, photos, nearby places, geocoding, directions with traffic, distance matrix.
 - **Dialogflow:** inspect and test ES/CX chatbots, create and improve intents.
+- **Apps Script:** generate scripts for Google Sheets (automations, custom functions, menus, triggers), install them bound to a sheet, deploy, run and debug.
 - **Google Analytics 4:** properties, traffic and conversion overviews, custom reports, realtime.
 - **Google Ads:** campaign, keyword, ad and search-term performance with ROAS, GAQL queries, negative keywords, pause/enable and budget changes (Claude asks first).
 
-Skills: connect Google, general Workspace, meeting scheduling, Maps business research, contacts, Dialogflow and Google Ads.
+Skills: connect Google, general Workspace, meeting scheduling, Maps business research, contacts, Dialogflow, Google Ads and Apps Script.
 
 ## Requirements
 
@@ -21,6 +22,7 @@ Skills: connect Google, general Workspace, meeting scheduling, Maps business res
 - A Google Cloud **Desktop app** OAuth client (`client_secret_*.json`) with the APIs above enabled.
 - For Google Chat: the Chat API configured in your Cloud project (Workspace accounts only).
 - For Google Maps: a Maps Platform API key (billing enabled).
+- For Apps Script: "Google Apps Script API" switched on at script.google.com/home/usersettings.
 - For Google Ads: a developer token from a Google Ads manager account (Tools → API Center).
 
 ## Get started

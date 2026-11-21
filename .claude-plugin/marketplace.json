@@ -5,9 +5,9 @@
   "plugins": [
     {
       "name": "google-workspace",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "source": "./plugin",
-      "description": "Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Dialogflow, Google Analytics and Google Ads connector with skills for Claude."
+      "description": "Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Dialogflow, Apps Script, Google Analytics and Google Ads connector with skills for Claude."
     }
   ]
 }

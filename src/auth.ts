@@ -22,6 +22,14 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/contacts.other.readonly", // People API: "other contacts" (people you've emailed)
   "https://www.googleapis.com/auth/directory.readonly", // People API: Workspace company directory
   "https://www.googleapis.com/auth/dialogflow", // Dialogflow ES and CX agents
+  "https://www.googleapis.com/auth/script.projects", // Apps Script: create and edit projects
+  "https://www.googleapis.com/auth/script.deployments", // Apps Script: versions and deployments
+  "https://www.googleapis.com/auth/script.processes", // Apps Script: execution logs
+  // Scopes that scripts commonly need when run through the Apps Script API (scripts.run):
+  "https://www.googleapis.com/auth/script.send_mail",
+  "https://www.googleapis.com/auth/script.external_request",
+  "https://www.googleapis.com/auth/script.scriptapp",
+  "https://www.googleapis.com/auth/script.container.ui",
 ];
 
 export const CONFIG_DIR =

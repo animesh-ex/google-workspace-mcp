@@ -1,11 +1,11 @@
 ---
 name: google-workspace
-description: Use for tasks in the user's own Gmail, Google Drive, Docs, Sheets, Slides, Google Chat or Google Analytics 4 through the google-workspace plugin tools — reading, searching, sending or replying to email (with attachments), creating/editing/reading/analyzing Docs, Sheets and Slides, sharing files, organizing Drive folders, reading or sending Chat messages, and GA4 traffic/conversion reports. For meetings use calendar-scheduling, for places use maps-business-research, for people use google-contacts, for chatbots use dialogflow, for ads use google-ads.
+description: Use for tasks in the user's own Gmail, Google Drive, Docs, Sheets, Slides, Google Chat or Google Analytics 4 through the google-workspace plugin tools — reading, searching, sending or replying to email (with attachments), creating/editing/reading/analyzing Docs, Sheets and Slides, sharing files, organizing Drive folders, reading or sending Chat messages, and GA4 traffic/conversion reports. For meetings use calendar-scheduling, for places use maps-business-research, for people use google-contacts, for chatbots use dialogflow, for ads use google-ads, for scripts and sheet automations use apps-script.
 ---
 
 # Google Workspace plugin
 
-The `google-workspace` MCP server exposes `gmail_`, `drive_`, `docs_`, `sheets_`, `slides_`, `calendar_`, `chat_`, `contacts_`, `maps_`, `ga_`, `ads_`, `dialogflow_` tools and `google_setup`.
+The `google-workspace` MCP server exposes `gmail_`, `drive_`, `docs_`, `sheets_`, `slides_`, `calendar_`, `chat_`, `contacts_`, `maps_`, `ga_`, `ads_`, `dialogflow_`, `script_` tools and `google_setup`.
 
 Dedicated skills cover these areas in depth; load the matching one:
 - **calendar-scheduling:** meetings, invites, availability.
@@ -13,6 +13,7 @@ Dedicated skills cover these areas in depth; load the matching one:
 - **google-contacts:** finding people's emails and phones, and managing contacts.
 - **dialogflow:** chatbot intents and testing.
 - **google-ads:** ad performance and changes.
+- **apps-script:** generating and running Apps Script for Google Sheets (automations, custom functions, menus, triggers).
 
 ## If not connected
 Any tool error saying "not signed in", "missing scopes", "OAuth client file not found", or that Ads/Maps aren't configured → run the setup skill (`google_setup` with `status`, then `import_credentials` / `sign_in` / `configure_ads` / `configure_maps`).

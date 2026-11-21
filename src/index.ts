@@ -14,13 +14,14 @@ import { registerChat } from "./tools/chat.js";
 import { registerMaps } from "./tools/maps.js";
 import { registerContacts } from "./tools/contacts.js";
 import { registerDialogflow } from "./tools/dialogflow.js";
+import { registerAppsScript } from "./tools/appsscript.js";
 
 const server = new McpServer(
-  { name: "google-workspace", version: "1.3.0" },
+  { name: "google-workspace", version: "1.4.0" },
   {
     instructions:
       "Google connector: Gmail (search/read/send/reply/drafts/attachments/labels), Drive (search/organize/upload/download/share), Docs, Sheets and Slides (create/read/edit/analyze), " +
-      "Google Calendar (calendar_*: list/search events, create/update/cancel, Meet links, RSVP, free time), Google Chat (chat_*: spaces, read/search/send messages, DMs), Google Contacts via People API (contacts_*: search contacts/other contacts/directory, create, update, groups), Dialogflow ES and CX (dialogflow_*: intents, test messages), " +
+      "Google Calendar (calendar_*: list/search events, create/update/cancel, Meet links, RSVP, free time), Google Chat (chat_*: spaces, read/search/send messages, DMs), Google Contacts via People API (contacts_*: search contacts/other contacts/directory, create, update, groups), Dialogflow ES and CX (dialogflow_*: intents, test messages), Apps Script (script_*: create scripts bound to Sheets/Docs, edit files, deploy, run functions, execution logs), " +
       "Google Maps (maps_*: business search, full place details with Google AI summaries and reviews, photos, nearby, geocoding, directions, distance matrix), " +
       "Google Analytics 4 (ga_*: list properties, overview, custom reports, realtime, metadata) and Google Ads (ads_*: accounts, campaign/ad group/keyword/ad/search-term performance, GAQL queries, negative keywords, pause/enable, budgets). " +
       "If a tool says the user is not signed in, is missing permissions, or Ads/Maps aren't configured, use google_setup (status, import_credentials, sign_in, configure_ads, configure_maps). Tools accept file IDs or full Google URLs. When the user names a person instead of an email, resolve it with contacts_search first. " +
@@ -38,6 +39,7 @@ registerChat(server);
 registerMaps(server);
 registerContacts(server);
 registerDialogflow(server);
+registerAppsScript(server);
 registerAnalytics(server);
 registerAds(server);
 registerSetup(server);
