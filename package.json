@@ -1,6 +1,6 @@
 {
   "name": "google-workspace-mcp",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "MCP connector for Gmail, Google Drive, Docs, Sheets and Slides",
   "type": "module",
   "main": "dist/index.js",
@@ -12,7 +12,8 @@
     "auth": "node dist/auth-cli.js",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
-    "build:plugin": "node build-plugin.mjs"
+    "build:plugin": "node build-plugin.mjs",
+    "docs": "node scripts/gen-tools-doc.mjs"
   },
   "license": "MIT",
   "dependencies": {

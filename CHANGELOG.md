@@ -2,6 +2,14 @@
 
 All notable changes to the Google Workspace plugin for Claude.
 
+## 1.5.1 — 2026-11-21
+- **Detailed documentation** in `docs/`:
+  - [SETUP.md](docs/SETUP.md): every setup step, service-specific steps, switching accounts, updating and uninstalling.
+  - [SKILLS.md](docs/SKILLS.md): each skill's workflow, confirmations and example prompts.
+  - [TOOLS.md](docs/TOOLS.md): all 130 tools with every parameter, generated from the code by `npm run docs`.
+  - [ARCHITECTURE.md](docs/ARCHITECTURE.md): how it works, repository layout, adding tools, releasing, security.
+- README links to the guides and explains that all tools act as one signed-in account.
+
 ## 1.5.0 — 2026-11-21
 - **Google Tag Manager** (13 tools): scan any website's tracking (GTM containers and their live contents, GA4/Ads/UA IDs, consent mode and platforms, other pixels, inline dataLayer); read containers; create workspaces; enable built-in variables; add Data Layer Variables, Custom Event triggers, and the Google tag plus GA4 event tags (with ecommerce); raw create/update/delete; create versions; publish; list versions for rollback.
 - **`tag-manager` skill:** scan → read and record the live dataLayer in a browser → compare with GTM and GA4 against the GA4 ecommerce schema → configure in a separate workspace → version → preview → publish only on approval.

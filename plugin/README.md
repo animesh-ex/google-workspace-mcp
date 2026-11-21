@@ -1,6 +1,8 @@
 # Google Workspace for Claude
 
-Version 1.5.0 · 130 tools · 9 skills · Full docs: <https://github.com/animesh-ex/google-workspace-mcp>
+Version 1.5.1 · 130 tools · 9 skills
+
+Guides: [Setup](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SETUP.md) · [Skills](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SKILLS.md) · [Tool reference](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/TOOLS.md) · [Architecture](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/ARCHITECTURE.md)
 
 Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Analytics 4 and Google Ads**. It runs on your computer, and your credentials never leave it.
 

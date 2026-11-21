@@ -4,9 +4,20 @@ A Claude plugin and MCP server that connects Claude to your Google account: **Gm
 
 It runs on your own computer and signs in with your own Google account. Your credentials and tokens never leave your machine.
 
-- **Version:** 1.5.0 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
+- **Version:** 1.5.1 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
 - **Requires:** Node.js 20 or newer
 - **License:** MIT
+
+## Documentation
+
+| Guide | What's in it |
+|---|---|
+| **[Setup guide](docs/SETUP.md)** | Step by step: Cloud project, APIs, consent screen, OAuth client, install, sign-in, and the extra steps for Chat, Apps Script, Maps, Ads, Tag Manager, Analytics and Dialogflow. Switching accounts, updating, uninstalling. |
+| **[Skills guide](docs/SKILLS.md)** | What each of the 9 skills does, its workflow, what it confirms with you, and example prompts. |
+| **[Tool reference](docs/TOOLS.md)** | All 130 tools with every parameter, its type, default and description (generated from the code). |
+| **[Architecture and development](docs/ARCHITECTURE.md)** | How it works, repository layout, adding tools, releasing, security notes. |
+
+> **One account at a time:** every tool acts as the single Google account you signed in with. Emails, files, events and GTM changes are made as that account. See [Choosing or switching the Google account](docs/SETUP.md#choosing-or-switching-the-google-account).
 
 ---
 
@@ -74,7 +85,7 @@ Clone the repo and run the bundled server over stdio. No `npm install` is needed
 
 ## Setup
 
-Once installed, just say **"connect Google"** (or run `/google-workspace:setup`). Claude walks you through each step and checks it. Here's what happens behind the scenes.
+Once installed, just say **"connect Google"** (or run `/google-workspace:setup`). Claude walks you through each step and checks it. Here's the short version; the **[full setup guide](docs/SETUP.md)** has every click, the service-specific steps and how to switch accounts.
 
 ### 1. Google Cloud project and OAuth client (once, about 10 minutes)
 1. Open <https://console.cloud.google.com/> and create or pick a project.
@@ -134,7 +145,7 @@ The signed-in Google account must itself have access to what you want Claude to 
 
 ## Skills
 
-Skills teach Claude the workflow, not just the API calls. Claude loads the right one automatically from what you ask.
+Skills teach Claude the workflow, not just the API calls. Claude loads the right one automatically from what you ask. See the **[skills guide](docs/SKILLS.md)** for each workflow and example prompts.
 
 | Skill | What it does |
 |---|---|
@@ -152,7 +163,7 @@ Skills teach Claude the workflow, not just the API calls. Claude loads the right
 
 ## Tools
 
-Every tool accepts either an ID or a full Google URL. Create tools take an optional `folderId` so new files land in the right Drive folder.
+Every tool accepts either an ID or a full Google URL. Create tools take an optional `folderId` so new files land in the right Drive folder. The **[tool reference](docs/TOOLS.md)** lists every parameter.
 
 <details>
 <summary><b>Gmail (12)</b></summary>
@@ -298,10 +309,13 @@ Everything is stored in `~/.google-workspace-mcp/`, which on Windows is `C:\User
 
 ## Development
 
+See **[architecture and development](docs/ARCHITECTURE.md)** for how it works and how to add tools.
+
 ```bash
 npm install
 npm run build         # TypeScript → dist/
 npm run build:plugin  # bundle → plugin/server/index.mjs (what the plugin runs)
+npm run docs          # regenerate docs/TOOLS.md
 npm run typecheck
 npm run auth          # command-line sign-in (alternative to google_setup)
 ```
