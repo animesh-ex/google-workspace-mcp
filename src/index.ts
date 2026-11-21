@@ -11,7 +11,7 @@ import { registerAnalytics } from "./tools/analytics.js";
 import { registerAds } from "./tools/ads.js";
 
 const server = new McpServer(
-  { name: "google-workspace", version: "1.1.0" },
+  { name: "google-workspace", version: "1.1.2" },
   {
     instructions:
       "Google connector: Gmail (search/read/send/reply/drafts/attachments/labels), Drive (search/organize/upload/download/share), Docs, Sheets and Slides (create/read/edit/analyze), " +

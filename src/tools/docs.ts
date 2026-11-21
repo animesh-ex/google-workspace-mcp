@@ -13,7 +13,8 @@ interface Span { start: number; end: number; bold?: boolean; italic?: boolean; c
 function parseInline(src: string): { text: string; spans: Span[] } {
   const spans: Span[] = [];
   let text = "";
-  const re = /(\*\*|__)(.+?)\1|(\*|_)(.+?)\3|`([^`]+)`|~~(.+?)~~|\[([^\]]+)\]\(([^)\s]+)\)/g;
+  // Underscore emphasis only at word boundaries, so snake_case names (utm_source, add_to_cart) stay intact.
+  const re = /(\*\*|(?<!\w)__)(.+?)(?:\*\*|__(?!\w))|(\*(?!\s)|(?<!\w)_(?!\s))(.+?)(?:\*|_(?!\w))|`([^`]+)`|~~(.+?)~~|\[([^\]]+)\]\(([^)\s]+)\)/g;
   let last = 0;
   let m: RegExpExecArray | null;
   while ((m = re.exec(src))) {

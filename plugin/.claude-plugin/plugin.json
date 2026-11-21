@@ -1,6 +1,6 @@
 {
   "name": "google-workspace",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Gmail, Google Drive, Docs, Sheets, Slides, Google Analytics 4 and Google Ads for Claude: read, send and reply to email with attachments; create, edit, read and analyze Docs, Sheets and Slides; share files and organize Drive.",
   "author": { "name": "animesh-ex" },
   "repository": "https://github.com/animesh-ex/google-workspace-mcp",
