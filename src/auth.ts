@@ -36,10 +36,21 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/tagmanager.publish", // GTM: publish versions
 ];
 
-export const CONFIG_DIR =
-  process.env.GOOGLE_WORKSPACE_MCP_DIR || path.join(os.homedir(), ".google-workspace-mcp");
-export const CREDENTIALS_PATH =
-  process.env.GOOGLE_OAUTH_CREDENTIALS || path.join(CONFIG_DIR, "credentials.json");
+/**
+ * Read a setting from the environment. Plugin settings arrive as env vars set in .mcp.json; a setting the
+ * user left empty (or a placeholder the host didn't substitute, like "${user_config.x}") counts as not set,
+ * so the server falls back to the files in the config folder.
+ */
+export function env(...names: string[]): string | undefined {
+  for (const n of names) {
+    const v = process.env[n]?.trim();
+    if (v && !/^\$\{.*\}$/.test(v)) return v;
+  }
+  return undefined;
+}
+
+export const CONFIG_DIR = env("GOOGLE_WORKSPACE_MCP_DIR") || path.join(os.homedir(), ".google-workspace-mcp");
+export const CREDENTIALS_PATH = env("GOOGLE_OAUTH_CREDENTIALS") || path.join(CONFIG_DIR, "credentials.json");
 export const TOKEN_PATH = path.join(CONFIG_DIR, "token.json");
 
 interface ClientSecrets {
@@ -48,12 +59,8 @@ interface ClientSecrets {
 }
 
 function loadClientSecrets(): ClientSecrets {
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    return {
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    };
-  }
+  const id = env("GOOGLE_CLIENT_ID"), secret = env("GOOGLE_CLIENT_SECRET");
+  if (id && secret) return { client_id: id, client_secret: secret };
   if (!fs.existsSync(CREDENTIALS_PATH)) {
     throw new Error(
       `OAuth client file not found at ${CREDENTIALS_PATH}. Create a "Desktop app" OAuth client in Google Cloud Console, download the JSON, and save it there (see README).`,
@@ -125,6 +132,7 @@ export function authStatus() {
     credentialsPath: CREDENTIALS_PATH,
     clientConfigured,
     clientError,
+    clientSource: env("GOOGLE_CLIENT_ID") ? "environment" : env("GOOGLE_OAUTH_CREDENTIALS") ? "plugin settings" : "config folder",
     cloudProjectNumber: cloudProjectNumber(),
     signedIn,
     missingScopes: missingScopes?.length ? missingScopes : undefined,
@@ -134,6 +142,9 @@ export function authStatus() {
 
 /** Copy a downloaded OAuth client JSON into place after validating it. */
 export function importCredentials(sourcePath: string) {
+  if (env("GOOGLE_OAUTH_CREDENTIALS")) {
+    throw new Error(`The plugin settings point to your OAuth client file (${CREDENTIALS_PATH}), so there's nothing to import. To use a different file, change "OAuth client JSON path" in the plugin settings.`);
+  }
   const raw = JSON.parse(fs.readFileSync(sourcePath, "utf8"));
   const c = raw.installed || raw.web;
   if (!c?.client_id || !c?.client_secret) throw new Error(`${sourcePath} is not a Google OAuth client JSON file.`);

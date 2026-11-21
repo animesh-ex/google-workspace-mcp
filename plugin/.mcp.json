@@ -3,7 +3,13 @@
     "google-workspace": {
       "type": "stdio",
       "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/server/index.mjs"]
+      "args": ["${CLAUDE_PLUGIN_ROOT}/server/index.mjs"],
+      "env": {
+        "GOOGLE_MAPS_API_KEY": "${user_config.google_maps_api_key}",
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "${user_config.google_ads_developer_token}",
+        "GOOGLE_ADS_LOGIN_CUSTOMER_ID": "${user_config.google_ads_manager_account_id}",
+        "GOOGLE_OAUTH_CREDENTIALS": "${user_config.google_oauth_client_file}"
+      }
     }
   }
 }

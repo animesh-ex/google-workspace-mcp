@@ -2,13 +2,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { CONFIG_DIR } from "../auth.js";
+import { CONFIG_DIR, env } from "../auth.js";
 import { tool, READ } from "../util.js";
 
 export const MAPS_CONFIG_PATH = path.join(CONFIG_DIR, "maps.json");
 
 export function loadMapsKey(): string | null {
-  if (process.env.GOOGLE_MAPS_API_KEY) return process.env.GOOGLE_MAPS_API_KEY;
+  const fromSettings = env("GOOGLE_MAPS_API_KEY");
+  if (fromSettings) return fromSettings;
   if (!fs.existsSync(MAPS_CONFIG_PATH)) return null;
   return JSON.parse(fs.readFileSync(MAPS_CONFIG_PATH, "utf8")).apiKey || null;
 }

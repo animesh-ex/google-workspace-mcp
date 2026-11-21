@@ -2,21 +2,21 @@ import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getAuthClient, CONFIG_DIR } from "../auth.js";
+import { getAuthClient, CONFIG_DIR, env } from "../auth.js";
 import { tool, READ, WRITE, DESTRUCTIVE } from "../util.js";
 
-const API_VERSION = process.env.GOOGLE_ADS_API_VERSION || "v26";
+const API_VERSION = env("GOOGLE_ADS_API_VERSION") || "v26";
 export const ADS_CONFIG_PATH = path.join(CONFIG_DIR, "ads.json");
 
-interface AdsConfig { developerToken: string; loginCustomerId?: string }
+interface AdsConfig { developerToken: string; loginCustomerId?: string; source?: string }
 
+/** Plugin settings (env) win over ads.json; the manager ID can come from either. */
 export function loadAdsConfig(): AdsConfig | null {
-  if (process.env.GOOGLE_ADS_DEVELOPER_TOKEN) {
-    return { developerToken: process.env.GOOGLE_ADS_DEVELOPER_TOKEN, loginCustomerId: process.env.GOOGLE_ADS_LOGIN_CUSTOMER_ID };
-  }
-  if (!fs.existsSync(ADS_CONFIG_PATH)) return null;
-  const c = JSON.parse(fs.readFileSync(ADS_CONFIG_PATH, "utf8"));
-  return c.developerToken ? c : null;
+  const file = fs.existsSync(ADS_CONFIG_PATH) ? JSON.parse(fs.readFileSync(ADS_CONFIG_PATH, "utf8")) : {};
+  const token = env("GOOGLE_ADS_DEVELOPER_TOKEN");
+  if (token) return { developerToken: token, loginCustomerId: env("GOOGLE_ADS_LOGIN_CUSTOMER_ID") || file.loginCustomerId, source: "plugin settings" };
+  if (!file.developerToken) return null;
+  return { developerToken: file.developerToken, loginCustomerId: env("GOOGLE_ADS_LOGIN_CUSTOMER_ID") || file.loginCustomerId, source: ADS_CONFIG_PATH };
 }
 
 const cid = (id: string) => id.replace(/\D/g, "");

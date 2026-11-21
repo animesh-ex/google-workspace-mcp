@@ -4,7 +4,7 @@ import os from "node:os";
 import { z } from "zod";
 import open from "open";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { authStatus, importCredentials, resetAuthCache, runInteractiveAuth, TOKEN_PATH } from "../auth.js";
+import { authStatus, importCredentials, resetAuthCache, runInteractiveAuth, TOKEN_PATH, env } from "../auth.js";
 import { drive, tool } from "../util.js";
 import { loadAdsConfig, ADS_CONFIG_PATH } from "./ads.js";
 import { loadMapsKey, MAPS_CONFIG_PATH } from "./maps.js";
@@ -45,21 +45,29 @@ export function registerSetup(server: McpServer) {
         const ads = loadAdsConfig();
         return {
           ...s, account, downloadedClientJsonFound: s.clientConfigured ? undefined : findDownloadedClientJson(),
-          googleAds: ads ? { configured: true, loginCustomerId: ads.loginCustomerId } : { configured: false, configPath: ADS_CONFIG_PATH },
-          googleMaps: loadMapsKey() ? { configured: true } : { configured: false, configPath: MAPS_CONFIG_PATH },
+          googleAds: ads ? { configured: true, loginCustomerId: ads.loginCustomerId, source: ads.source } : { configured: false, setIn: "plugin settings (Google Ads developer token) or " + ADS_CONFIG_PATH },
+          googleMaps: loadMapsKey()
+            ? { configured: true, source: env("GOOGLE_MAPS_API_KEY") ? "plugin settings" : MAPS_CONFIG_PATH }
+            : { configured: false, setIn: "plugin settings (Google Maps API key) or " + MAPS_CONFIG_PATH },
         };
       }
       if (action === "configure_maps") {
         if (!mapsApiKey) throw new Error("mapsApiKey is required (Google Cloud → APIs & Services → Credentials → Create credentials → API key).");
         fs.mkdirSync(path.dirname(MAPS_CONFIG_PATH), { recursive: true });
         fs.writeFileSync(MAPS_CONFIG_PATH, JSON.stringify({ apiKey: mapsApiKey.trim() }, null, 2), { mode: 0o600 });
-        return { saved: MAPS_CONFIG_PATH, next: "Try maps_geocode or maps_search_places." };
+        return {
+          saved: MAPS_CONFIG_PATH, next: "Try maps_geocode or maps_search_places.",
+          note: env("GOOGLE_MAPS_API_KEY") ? "A Maps key is also set in the plugin settings, and that one takes priority. Change or clear it there for this file to be used." : undefined,
+        };
       }
       if (action === "configure_ads") {
         if (!developerToken) throw new Error("developerToken is required (Google Ads → Tools → API Center).");
         fs.mkdirSync(path.dirname(ADS_CONFIG_PATH), { recursive: true });
         fs.writeFileSync(ADS_CONFIG_PATH, JSON.stringify({ developerToken, loginCustomerId: loginCustomerId?.replace(/\D/g, "") || undefined }, null, 2), { mode: 0o600 });
-        return { saved: ADS_CONFIG_PATH, next: "Try ads_list_accounts." };
+        return {
+          saved: ADS_CONFIG_PATH, next: "Try ads_list_accounts.",
+          note: env("GOOGLE_ADS_DEVELOPER_TOKEN") ? "A developer token is also set in the plugin settings, and that one takes priority. Change or clear it there for this file to be used." : undefined,
+        };
       }
       if (action === "import_credentials") {
         const src = credentialsPath || findDownloadedClientJson();

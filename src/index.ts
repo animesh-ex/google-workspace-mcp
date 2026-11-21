@@ -18,7 +18,7 @@ import { registerAppsScript } from "./tools/appsscript.js";
 import { registerGtm } from "./tools/gtm.js";
 
 const server = new McpServer(
-  { name: "google-workspace", version: "1.5.1" },
+  { name: "google-workspace", version: "1.6.0" },
   {
     instructions:
       "Google connector: Gmail (search/read/send/reply/drafts/attachments/labels), Drive (search/organize/upload/download/share), Docs, Sheets and Slides (create/read/edit/analyze), " +

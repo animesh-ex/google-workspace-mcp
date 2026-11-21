@@ -4,7 +4,7 @@ A Claude plugin and MCP server that connects Claude to your Google account: **Gm
 
 It runs on your own computer and signs in with your own Google account. Your credentials and tokens never leave your machine.
 
-- **Version:** 1.5.1 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
+- **Version:** 1.6.0 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
 - **Requires:** Node.js 20 or newer
 - **License:** MIT
 
@@ -128,12 +128,12 @@ Google requires the Chat API to be configured once per Cloud project, even if yo
 Maps Platform uses an **API key** instead of sign-in, and the project needs **billing enabled**. Google includes a monthly free allowance.
 1. **APIs & Services → Credentials → Create credentials → API key.**
 2. Restrict the key to **Places API (New)**, **Geocoding API** and **Routes API**.
-3. Give it to Claude (`google_setup` → `configure_maps`), or save `~/.google-workspace-mcp/maps.json` as `{ "apiKey": "YOUR_KEY" }`.
+3. Enter it in the **plugin settings** (see below), give it to Claude in chat (`google_setup` → `configure_maps`), or save `~/.google-workspace-mcp/maps.json` as `{ "apiKey": "YOUR_KEY" }`.
 
 ### 6. Google Ads developer token (optional)
 1. Sign in to a Google Ads **manager (MCC)** account with access to your ad accounts. You can [create one for free](https://ads.google.com/home/tools/manager-accounts/).
 2. Go to **Tools → Setup → API Center** and copy the developer token. New tokens only work on test accounts until you apply for **Basic access** on the same page.
-3. Give the token and the manager account ID to Claude (`google_setup` → `configure_ads`), or save `~/.google-workspace-mcp/ads.json`:
+3. Enter the token and manager account ID in the **plugin settings** (see below), give them to Claude in chat (`google_setup` → `configure_ads`), or save `~/.google-workspace-mcp/ads.json`:
    ```json
    { "developerToken": "YOUR_TOKEN", "loginCustomerId": "1234567890" }
    ```
@@ -257,6 +257,20 @@ Maps uses an API key, not a scope.
 ---
 
 ## Configuration files and environment variables
+
+### Plugin settings
+When you enable the plugin, Claude shows a settings form. Every field is optional:
+
+| Setting | Stored | Used for |
+|---|---|---|
+| **Google Maps API key** | Masked; kept in the system's secure credential store | `maps_*` tools |
+| **Google Ads developer token** | Masked; kept in the system's secure credential store | `ads_*` tools |
+| **Google Ads manager (MCC) account ID** | Claude settings; editable in `/config` | Accessing ad accounts through a manager |
+| **OAuth client JSON path** | Claude settings; editable in `/config` | Using your `client_secret_….json` where it is, instead of importing it |
+
+Plugin settings take priority over the files below and apply after a restart. Details, including how to change them later, are in the [setup guide](docs/SETUP.md#plugin-settings-api-keys).
+
+### Files
 
 Everything is stored in `~/.google-workspace-mcp/`, which on Windows is `C:\Users\<you>\.google-workspace-mcp\`:
 

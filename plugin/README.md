@@ -1,6 +1,6 @@
 # Google Workspace for Claude
 
-Version 1.5.1 · 130 tools · 9 skills
+Version 1.6.0 · 130 tools · 9 skills
 
 Guides: [Setup](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SETUP.md) · [Skills](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SKILLS.md) · [Tool reference](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/TOOLS.md) · [Architecture](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/ARCHITECTURE.md)
 
@@ -38,6 +38,15 @@ Claude picks the right skill from what you ask. It confirms before sending email
 Say **"connect Google"** (or run `/google-workspace:setup`). Claude imports your downloaded client file, opens Google sign-in in your browser, checks permissions, and helps configure the extras.
 
 Credentials, the sign-in token and any API keys are stored only in `~/.google-workspace-mcp/`.
+
+## Settings
+When you enable the plugin, Claude asks for these. All are optional:
+- **Google Maps API key**, masked and stored securely
+- **Google Ads developer token**, masked and stored securely
+- **Google Ads manager (MCC) account ID**
+- **OAuth client JSON path**
+
+You can also set keys in chat ("save my Google Maps key"). Plugin settings take priority, and `google_setup` → `status` shows where each value comes from.
 
 ## Environment variables (optional)
 

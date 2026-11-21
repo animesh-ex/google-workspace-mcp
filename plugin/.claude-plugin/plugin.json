@@ -1,10 +1,38 @@
 {
   "name": "google-workspace",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Apps Script, Google Tag Manager, Google Analytics 4 and Google Ads for Claude: email with attachments, Docs/Sheets/Slides, Drive sharing, meeting scheduling and invites, Chat, contacts, business details and AI summaries from Maps, chatbot building, Apps Script automations for Sheets, website tracking audits and GTM setup, analytics reports and ad management.",
   "author": { "name": "animesh-ex" },
   "repository": "https://github.com/animesh-ex/google-workspace-mcp",
   "homepage": "https://github.com/animesh-ex/google-workspace-mcp",
   "license": "MIT",
-  "keywords": ["google", "gmail", "drive", "docs", "sheets", "slides", "workspace", "calendar", "chat", "maps", "contacts", "people", "dialogflow", "apps-script", "tag-manager", "gtm", "analytics", "ads", "mcp"]
+  "keywords": ["google", "gmail", "drive", "docs", "sheets", "slides", "workspace", "calendar", "chat", "maps", "contacts", "people", "dialogflow", "apps-script", "tag-manager", "gtm", "analytics", "ads", "mcp"],
+  "userConfig": {
+    "google_maps_api_key": {
+      "type": "string",
+      "title": "Google Maps API key (optional)",
+      "description": "Maps Platform API key for the maps_* tools (Places API (New), Geocoding API, Routes API; billing must be enabled). Leave empty to skip Maps or to use ~/.google-workspace-mcp/maps.json.",
+      "sensitive": true,
+      "default": ""
+    },
+    "google_ads_developer_token": {
+      "type": "string",
+      "title": "Google Ads developer token (optional)",
+      "description": "From a Google Ads manager account: Tools → Setup → API Center. Needed for the ads_* tools. Leave empty to skip Ads or to use ~/.google-workspace-mcp/ads.json.",
+      "sensitive": true,
+      "default": ""
+    },
+    "google_ads_manager_account_id": {
+      "type": "string",
+      "title": "Google Ads manager (MCC) account ID (optional)",
+      "description": "10-digit ID of the manager account your ad accounts sit under, e.g. 123-456-7890. Leave empty if you access ad accounts directly.",
+      "default": ""
+    },
+    "google_oauth_client_file": {
+      "type": "string",
+      "title": "OAuth client JSON path (optional)",
+      "description": "Full path to your Google Cloud 'Desktop app' OAuth client file (client_secret_….json). Leave empty to use ~/.google-workspace-mcp/credentials.json, which the setup skill can import for you.",
+      "default": ""
+    }
+  }
 }

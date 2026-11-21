@@ -2,6 +2,12 @@
 
 All notable changes to the Google Workspace plugin for Claude.
 
+## 1.6.0 — 2026-11-21
+- **Plugin settings for API keys:** the plugin now declares settings that Claude asks for when it's enabled. These are the Google Maps API key and Google Ads developer token (both masked and kept in the system's secure credential store), the Google Ads manager account ID, and the OAuth client JSON path. They are passed to the server and take priority over `maps.json` / `ads.json`.
+- Empty or unfilled settings are treated as not set, so the files in `~/.google-workspace-mcp/` still work.
+- `google_setup` → `status` shows where each value comes from. Saving a key in chat warns if a plugin setting overrides it, and importing a client file is blocked when the settings point to one.
+- The setup skill offers both ways to enter keys and never repeats keys back. The setup guide has a new "Plugin settings" section.
+
 ## 1.5.1 — 2026-11-21
 - **Detailed documentation** in `docs/`:
   - [SETUP.md](docs/SETUP.md): every setup step, service-specific steps, switching accounts, updating and uninstalling.

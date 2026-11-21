@@ -9,6 +9,7 @@ This guide takes you from nothing to a working connection. The quickest route is
 - [Step 4: Create the OAuth client](#step-4-create-the-oauth-client)
 - [Step 5: Install the plugin](#step-5-install-the-plugin)
 - [Step 6: Sign in](#step-6-sign-in)
+- [Plugin settings (API keys)](#plugin-settings-api-keys)
 - [Service-specific steps](#service-specific-steps): Chat, Apps Script, Maps, Google Ads, Tag Manager, Analytics, Dialogflow
 - [Choosing or switching the Google account](#choosing-or-switching-the-google-account)
 - [Updating](#updating)
@@ -120,6 +121,25 @@ Say **"connect Google"**. Behind the scenes:
 
 ---
 
+## Plugin settings (API keys)
+The plugin has a settings form. When you enable it, Claude asks for these. All are optional, so leave a field empty to skip it:
+
+| Setting | Stored | Used for |
+|---|---|---|
+| **Google Maps API key** | Masked; kept in the system's secure credential store | `maps_*` tools |
+| **Google Ads developer token** | Masked; kept in the system's secure credential store | `ads_*` tools |
+| **Google Ads manager (MCC) account ID** | Claude settings; editable in `/config` | Accessing ad accounts through a manager |
+| **OAuth client JSON path** | Claude settings; editable in `/config` | Using your `client_secret_….json` where it is, instead of importing it |
+
+**Two ways to enter keys:**
+1. **Plugin settings** (recommended for secrets). Secrets are masked and never written to a plain settings file. Changes apply after you restart Claude.
+   - **Change later:** the manager ID and client path appear in **`/config`** in Claude Code. Secrets don't appear there; Claude asks for them when the plugin is enabled, so to replace a saved secret, uninstall and reinstall (or disable and re-enable) the plugin.
+2. **In chat:** "save my Google Maps key" or "set my Ads developer token". This writes `maps.json` / `ads.json` in `~/.google-workspace-mcp/` and works immediately, but the file isn't encrypted.
+
+**Priority:** a value in plugin settings wins over the file. `google_setup` → `status` shows where each value comes from (`source`). If you save a key in chat while a different one is in plugin settings, Claude tells you the plugin setting is still the one in use.
+
+---
+
 ## Service-specific steps
 
 ### Google Chat (Workspace accounts only)
@@ -141,7 +161,7 @@ Google requires every Cloud project that calls the Chat API to have a Chat app c
 1. The Cloud project must have **billing enabled** (Billing → Link a billing account). Google includes a monthly free allowance; check current pricing on Google's Maps Platform pricing page.
 2. **APIs & Services → Credentials → Create credentials → API key.**
 3. **Edit the key → API restrictions → Restrict key** to Places API (New), Geocoding API and Routes API.
-4. Give the key to Claude ("save my Maps key …" → `google_setup` → `configure_maps`), or create `~/.google-workspace-mcp/maps.json`:
+4. Enter it in the plugin settings as **Google Maps API key** (see [Plugin settings](#plugin-settings-api-keys)), give it to Claude in chat (`google_setup` → `configure_maps`), or create `~/.google-workspace-mcp/maps.json`:
    ```json
    { "apiKey": "YOUR_KEY" }
    ```
@@ -153,7 +173,7 @@ Some fields, such as Google's AI summaries of places, are only available for som
 1. Sign in to a Google Ads **manager (MCC)** account that has access to your ad accounts. You can [create one for free](https://ads.google.com/home/tools/manager-accounts/) and link your accounts to it.
 2. **Tools → Setup → API Center**, accept the terms and copy the **developer token**.
 3. New tokens have **Test** access, which only works on test accounts. Apply for **Basic access** on the same page to use real accounts.
-4. Give the token and the manager account's 10-digit ID to Claude (`google_setup` → `configure_ads`), or create `~/.google-workspace-mcp/ads.json`:
+4. Enter the token and the manager account's 10-digit ID in the plugin settings (**Google Ads developer token**, **Google Ads manager (MCC) account ID**), give them to Claude in chat (`google_setup` → `configure_ads`), or create `~/.google-workspace-mcp/ads.json`:
    ```json
    { "developerToken": "YOUR_TOKEN", "loginCustomerId": "1234567890" }
    ```

@@ -20,6 +20,7 @@ How the plugin works, where things live, and how to extend it.
   - **OAuth 2.0** for user data, using an installed-app flow with a loopback redirect on `127.0.0.1`. The refresh token is stored locally in `token.json` and refreshed access tokens are saved automatically.
   - **API key** for Maps.
   - **Developer token** (plus an optional manager account ID) as headers for Google Ads.
+- **Settings:** `plugin.json` declares `userConfig` options (Maps key and Ads token marked `sensitive`). `.mcp.json` passes them to the server as `GOOGLE_MAPS_API_KEY`, `GOOGLE_ADS_DEVELOPER_TOKEN`, `GOOGLE_ADS_LOGIN_CUSTOMER_ID` and `GOOGLE_OAUTH_CREDENTIALS`. The server's `env()` helper treats empty or unsubstituted values as unset and falls back to the JSON files in the config folder.
 - **Nothing is sent anywhere except Google's APIs.** There's no telemetry. The website scanner fetches the URL you ask for and Google's public `gtm.js`.
 
 ## Repository layout
