@@ -122,7 +122,7 @@ Say **"connect Google"**. Behind the scenes:
 ---
 
 ## Plugin settings (API keys)
-The plugin has a settings form. When you enable it, Claude asks for these. All are optional, so leave a field empty to skip it:
+Where Claude Code shows plugin settings, it asks for these when you enable the plugin. All are optional, so leave a field empty to skip it. The Claude app's plugin page currently shows only tool permissions, so use the **settings page** described below there.
 
 | Setting | Stored | Used for |
 |---|---|---|
@@ -131,10 +131,11 @@ The plugin has a settings form. When you enable it, Claude asks for these. All a
 | **Google Ads manager (MCC) account ID** | Claude settings; editable in `/config` | Accessing ad accounts through a manager |
 | **OAuth client JSON path** | Claude settings; editable in `/config` | Using your `client_secret_….json` where it is, instead of importing it |
 
-**Two ways to enter keys:**
-1. **Plugin settings** (recommended for secrets). Secrets are masked and never written to a plain settings file. Changes apply after you restart Claude.
+**Three ways to enter keys:**
+1. **Settings page (works everywhere, recommended):** say **"open settings"** (or run `/google-workspace:settings`). A private page opens in your browser at `http://127.0.0.1:…`, reachable only from this computer, with a link that expires after 10 minutes. Enter the Google Maps API key, Google Ads developer token and manager account ID, then click **Save**. Keys are saved on this computer only, never pass through the chat, and are shown masked afterwards. A new Maps key is tested immediately. Leave a field empty to keep its value, or tick "Remove saved value" to delete it.
+2. **Plugin settings form** (Claude Code). Secrets are masked and never written to a plain settings file. Changes apply after you restart Claude.
    - **Change later:** the manager ID and client path appear in **`/config`** in Claude Code. Secrets don't appear there; Claude asks for them when the plugin is enabled, so to replace a saved secret, uninstall and reinstall (or disable and re-enable) the plugin.
-2. **In chat:** "save my Google Maps key" or "set my Ads developer token". This writes `maps.json` / `ads.json` in `~/.google-workspace-mcp/` and works immediately, but the file isn't encrypted.
+3. **In chat:** "save my Google Maps key" or "set my Ads developer token". This writes `maps.json` / `ads.json` in `~/.google-workspace-mcp/` and works immediately, but the file isn't encrypted.
 
 **Priority:** a value in plugin settings wins over the file. `google_setup` → `status` shows where each value comes from (`source`). If you save a key in chat while a different one is in plugin settings, Claude tells you the plugin setting is still the one in use.
 

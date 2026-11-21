@@ -7,6 +7,7 @@ The source of each skill is in [`plugin/skills/<name>/SKILL.md`](../plugin/skill
 | Skill | Use it for |
 |---|---|
 | [setup](#setup) | Connecting Google and configuring extras |
+| [settings](#settings) | Entering or changing API keys on the settings page |
 | [google-workspace](#google-workspace) | Email, Drive, Docs, Sheets, Slides, Chat, GA4 |
 | [calendar-scheduling](#calendar-scheduling) | Meetings, invites, availability |
 | [google-contacts](#google-contacts) | Finding people and managing contacts |
@@ -27,6 +28,13 @@ The source of each skill is in [`plugin/skills/<name>/SKILL.md`](../plugin/skill
 3. Opens Google sign-in and confirms the account.
 4. Walks through each extra the user needs: Ads developer token, Chat configuration, Maps key, Apps Script user setting, and Analytics access.
 5. Suggests a first task to try.
+
+---
+
+## settings
+**Triggers:** "open settings", "set/change/remove my API key", "configure Maps or Ads", `/google-workspace:settings`.
+
+**What it does:** opens the plugin's settings page in your browser. It's served on `127.0.0.1` behind a one-time link that expires after 10 minutes. You enter the Maps API key, Ads developer token and manager account ID there. The keys go straight to `~/.google-workspace-mcp/` on your computer and never through the chat; saved keys are shown masked, and a new Maps key is tested on save. Claude never asks you to paste keys into the chat. When you're done, it checks the status and runs a quick Maps or Ads test.
 
 ---
 

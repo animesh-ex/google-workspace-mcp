@@ -1,10 +1,10 @@
 # Google Workspace for Claude
 
-A Claude plugin and MCP server that connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Analytics 4 and Google Ads**. It's **130 tools and 9 skills** in one package.
+A Claude plugin and MCP server that connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Analytics 4 and Google Ads**. It's **130 tools and 10 skills** in one package.
 
 It runs on your own computer and signs in with your own Google account. Your credentials and tokens never leave your machine.
 
-- **Version:** 1.6.0 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
+- **Version:** 1.7.0 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
 - **Requires:** Node.js 20 or newer
 - **License:** MIT
 
@@ -13,7 +13,7 @@ It runs on your own computer and signs in with your own Google account. Your cre
 | Guide | What's in it |
 |---|---|
 | **[Setup guide](docs/SETUP.md)** | Step by step: Cloud project, APIs, consent screen, OAuth client, install, sign-in, and the extra steps for Chat, Apps Script, Maps, Ads, Tag Manager, Analytics and Dialogflow. Switching accounts, updating, uninstalling. |
-| **[Skills guide](docs/SKILLS.md)** | What each of the 9 skills does, its workflow, what it confirms with you, and example prompts. |
+| **[Skills guide](docs/SKILLS.md)** | What each of the 10 skills does, its workflow, what it confirms with you, and example prompts. |
 | **[Tool reference](docs/TOOLS.md)** | All 130 tools with every parameter, its type, default and description (generated from the code). |
 | **[Architecture and development](docs/ARCHITECTURE.md)** | How it works, repository layout, adding tools, releasing, security notes. |
 
@@ -149,6 +149,7 @@ Skills teach Claude the workflow, not just the API calls. Claude loads the right
 
 | Skill | What it does |
 |---|---|
+| `settings` | Opens the plugin's settings page in your browser to enter, change or remove the Maps API key and Google Ads token. Keys never pass through the chat. |
 | `setup` | Connects your Google account step by step: imports the client file, signs in, checks permissions, and configures Chat, Apps Script, Maps and Ads. |
 | `google-workspace` | Everyday Gmail, Drive, Docs, Sheets, Slides, Chat and GA4 work. Resolves names to emails and confirms before sending or sharing. |
 | `calendar-scheduling` | Resolves names to emails, finds free slots for everyone, proposes 2–3 times, confirms, then creates the event with a Meet link and invites. Also handles rescheduling, guests, cancelling and RSVPs. |
@@ -258,8 +259,11 @@ Maps uses an API key, not a scope.
 
 ## Configuration files and environment variables
 
-### Plugin settings
-When you enable the plugin, Claude shows a settings form. Every field is optional:
+### Settings page
+**Settings page (works everywhere, recommended):** say **"open settings"** (or run `/google-workspace:settings`). A private page opens in your browser at `http://127.0.0.1:…`, reachable only from this computer, with a link that expires after 10 minutes. Enter the Google Maps API key, Google Ads developer token and manager account ID, then click **Save**. Keys are saved on this computer only, never pass through the chat, and are shown masked afterwards. A new Maps key is tested immediately. Leave a field empty to keep its value, or tick "Remove saved value" to delete it.
+
+### Plugin settings form
+In Claude Code, the plugin also declares a settings form that's shown when you enable it. Every field is optional:
 
 | Setting | Stored | Used for |
 |---|---|---|

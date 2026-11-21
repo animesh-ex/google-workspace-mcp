@@ -2,6 +2,13 @@
 
 All notable changes to the Google Workspace plugin for Claude.
 
+## 1.7.0 — 2026-11-21
+- **Settings page for API keys:** `google_setup` → `open_settings` (or "open settings", `/google-workspace:settings`) opens a private local page where you enter, change or remove the Google Maps API key, Google Ads developer token and manager account ID. Keys go straight to `~/.google-workspace-mcp/` and never pass through the chat.
+  - **Security:** the page runs on 127.0.0.1 only, behind a random one-time link that expires after 10 minutes, and blocks wrong Host headers (DNS rebinding) and cross-site posts. It sends no-store, frame-deny and strict CSP headers.
+  - **Behavior:** saved keys are shown masked, and a new Maps key is tested immediately.
+- **New `settings` skill;** the setup skill now prefers the settings page. This works in the Claude app, whose plugin page shows only tool permissions.
+- Docs updated: README, setup guide, skills guide, architecture.
+
 ## 1.6.0 — 2026-11-21
 - **Plugin settings for API keys:** the plugin now declares settings that Claude asks for when it's enabled. These are the Google Maps API key and Google Ads developer token (both masked and kept in the system's secure credential store), the Google Ads manager account ID, and the OAuth client JSON path. They are passed to the server and take priority over `maps.json` / `ads.json`.
 - Empty or unfilled settings are treated as not set, so the files in `~/.google-workspace-mcp/` still work.

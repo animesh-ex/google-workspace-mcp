@@ -1,6 +1,6 @@
 {
   "name": "google-workspace",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Apps Script, Google Tag Manager, Google Analytics 4 and Google Ads for Claude: email with attachments, Docs/Sheets/Slides, Drive sharing, meeting scheduling and invites, Chat, contacts, business details and AI summaries from Maps, chatbot building, Apps Script automations for Sheets, website tracking audits and GTM setup, analytics reports and ad management.",
   "author": { "name": "animesh-ex" },
   "repository": "https://github.com/animesh-ex/google-workspace-mcp",

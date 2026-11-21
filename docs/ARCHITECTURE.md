@@ -45,6 +45,7 @@ How the plugin works, where things live, and how to extend it.
 | `src/tools/analytics.ts` | GA4 Data and Admin APIs |
 | `src/tools/ads.ts` | Google Ads REST (GAQL search, mutates) |
 | `src/tools/dialogflow.ts` | Dialogflow ES (v2) and CX (v3), regional endpoints |
+| `src/settings-page.ts` | Local settings page for API keys: loopback only, random token, Host/Origin checks, CSP, masked values |
 | `src/tools/setup.ts` | `google_setup` (status, import, sign-in/out, Ads and Maps config) |
 | `plugin/.claude-plugin/plugin.json` | Plugin manifest (name, version, description) |
 | `plugin/.mcp.json` | Starts `node ${CLAUDE_PLUGIN_ROOT}/server/index.mjs` |

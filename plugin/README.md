@@ -1,6 +1,6 @@
 # Google Workspace for Claude
 
-Version 1.6.0 · 130 tools · 9 skills
+Version 1.7.0 · 130 tools · 10 skills
 
 Guides: [Setup](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SETUP.md) · [Skills](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SKILLS.md) · [Tool reference](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/TOOLS.md) · [Architecture](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/ARCHITECTURE.md)
 
@@ -21,7 +21,7 @@ Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Ca
 - **Google Ads:** campaign, keyword, ad and search-term performance with ROAS, GAQL queries, negative keywords, pause/enable, budgets.
 
 ## Skills
-`setup` · `google-workspace` · `calendar-scheduling` · `google-contacts` · `maps-business-research` · `apps-script` · `tag-manager` · `dialogflow` · `google-ads`
+`setup` · `settings` · `google-workspace` · `calendar-scheduling` · `google-contacts` · `maps-business-research` · `apps-script` · `tag-manager` · `dialogflow` · `google-ads`
 
 Claude picks the right skill from what you ask. It confirms before sending email or Chat messages, sharing files, inviting or cancelling meeting guests, running scripts that change data, publishing a GTM container, or making any Google Ads change.
 
@@ -40,7 +40,9 @@ Say **"connect Google"** (or run `/google-workspace:setup`). Claude imports your
 Credentials, the sign-in token and any API keys are stored only in `~/.google-workspace-mcp/`.
 
 ## Settings
-When you enable the plugin, Claude asks for these. All are optional:
+Say **"open settings"** (or run `/google-workspace:settings`). A private settings page opens in your browser where you enter the Google Maps API key, Google Ads developer token and manager account ID. Keys are saved on this computer only and never pass through the chat.
+
+In Claude Code, the plugin also has a settings form shown when you enable it. All fields are optional:
 - **Google Maps API key**, masked and stored securely
 - **Google Ads developer token**, masked and stored securely
 - **Google Ads manager (MCC) account ID**

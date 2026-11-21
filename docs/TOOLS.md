@@ -1,6 +1,6 @@
 # Tool reference
 
-Generated from the plugin's tool definitions (version 1.6.0, 130 tools). Regenerate with `npm run docs`.
+Generated from the plugin's tool definitions (version 1.7.0, 130 tools). Regenerate with `npm run docs`.
 
 Every tool that takes a file, document, spreadsheet or presentation ID also accepts the full Google URL.
 
@@ -1461,11 +1461,11 @@ Send a test message to a Dialogflow CX agent and get its replies, matched intent
 
 ### `google_setup` ✏️
 
-Set up or check the Google connection. Actions: 'status' (what's configured), 'import_credentials' (copy a downloaded Desktop-app OAuth client JSON into place; omit path to use the newest client_secret_*.json in Downloads), 'sign_in' (opens the browser for Google consent and waits up to 5 minutes), 'sign_out' (deletes the saved token), 'configure_ads' (save a Google Ads developer token and optional manager account ID), 'configure_maps' (save a Google Maps Platform API key).
+Set up or check the Google connection. Actions: 'open_settings' (opens the plugin's settings page in the browser where the user types the Google Maps API key, Google Ads developer token and manager account ID — preferred way to set keys, they never pass through the chat), 'status' (what's configured), 'import_credentials' (copy a downloaded Desktop-app OAuth client JSON into place; omit path to use the newest client_secret_*.json in Downloads), 'sign_in' (opens the browser for Google consent and waits up to 5 minutes), 'sign_out' (deletes the saved token), 'configure_ads' (save a Google Ads developer token and optional manager account ID), 'configure_maps' (save a Google Maps Platform API key).
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `action` | `status` \\| `import_credentials` \\| `sign_in` \\| `sign_out` \\| `configure_ads` \\| `configure_maps` | yes |  |  |
+| `action` | `open_settings` \\| `status` \\| `import_credentials` \\| `sign_in` \\| `sign_out` \\| `configure_ads` \\| `configure_maps` | yes |  |  |
 | `credentialsPath` | string |  |  | For import_credentials: path to the downloaded client_secret_*.json |
 | `developerToken` | string |  |  | For configure_ads: Google Ads API developer token |
 | `loginCustomerId` | string |  |  | For configure_ads: manager (MCC) account ID, if accounts are accessed through one |
