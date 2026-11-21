@@ -13,6 +13,11 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/presentations",
   "https://www.googleapis.com/auth/analytics.readonly", // GA4 reports and property list
   "https://www.googleapis.com/auth/adwords", // Google Ads reporting and changes
+  "https://www.googleapis.com/auth/calendar", // Calendar: read, create, update, RSVP, free/busy
+  "https://www.googleapis.com/auth/chat.spaces.readonly", // Chat: list spaces
+  "https://www.googleapis.com/auth/chat.messages", // Chat: read and send messages
+  "https://www.googleapis.com/auth/chat.memberships.readonly", // Chat: list members
+  "https://www.googleapis.com/auth/chat.spaces.create", // Chat: start a direct message
 ];
 
 export const CONFIG_DIR =

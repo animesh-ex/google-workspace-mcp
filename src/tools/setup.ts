@@ -7,6 +7,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { authStatus, importCredentials, resetAuthCache, runInteractiveAuth, TOKEN_PATH } from "../auth.js";
 import { drive, tool } from "../util.js";
 import { loadAdsConfig, ADS_CONFIG_PATH } from "./ads.js";
+import { loadMapsKey, MAPS_CONFIG_PATH } from "./maps.js";
 
 function findDownloadedClientJson(): string | undefined {
   const dl = path.join(os.homedir(), "Downloads");
@@ -22,14 +23,15 @@ function findDownloadedClientJson(): string | undefined {
 
 export function registerSetup(server: McpServer) {
   tool(server, "google_setup",
-    "Set up or check the Google connection. Actions: 'status' (what's configured), 'import_credentials' (copy a downloaded Desktop-app OAuth client JSON into place; omit path to use the newest client_secret_*.json in Downloads), 'sign_in' (opens the browser for Google consent and waits up to 5 minutes), 'sign_out' (deletes the saved token), 'configure_ads' (save a Google Ads developer token and optional manager account ID).",
+    "Set up or check the Google connection. Actions: 'status' (what's configured), 'import_credentials' (copy a downloaded Desktop-app OAuth client JSON into place; omit path to use the newest client_secret_*.json in Downloads), 'sign_in' (opens the browser for Google consent and waits up to 5 minutes), 'sign_out' (deletes the saved token), 'configure_ads' (save a Google Ads developer token and optional manager account ID), 'configure_maps' (save a Google Maps Platform API key).",
     {
-      action: z.enum(["status", "import_credentials", "sign_in", "sign_out", "configure_ads"]),
+      action: z.enum(["status", "import_credentials", "sign_in", "sign_out", "configure_ads", "configure_maps"]),
       credentialsPath: z.string().optional().describe("For import_credentials: path to the downloaded client_secret_*.json"),
       developerToken: z.string().optional().describe("For configure_ads: Google Ads API developer token"),
       loginCustomerId: z.string().optional().describe("For configure_ads: manager (MCC) account ID, if accounts are accessed through one"),
+      mapsApiKey: z.string().optional().describe("For configure_maps: Google Maps Platform API key"),
     },
-    async ({ action, credentialsPath, developerToken, loginCustomerId }) => {
+    async ({ action, credentialsPath, developerToken, loginCustomerId, mapsApiKey }) => {
       if (action === "status") {
         const s = authStatus();
         let account: unknown;
@@ -44,7 +46,14 @@ export function registerSetup(server: McpServer) {
         return {
           ...s, account, downloadedClientJsonFound: s.clientConfigured ? undefined : findDownloadedClientJson(),
           googleAds: ads ? { configured: true, loginCustomerId: ads.loginCustomerId } : { configured: false, configPath: ADS_CONFIG_PATH },
+          googleMaps: loadMapsKey() ? { configured: true } : { configured: false, configPath: MAPS_CONFIG_PATH },
         };
+      }
+      if (action === "configure_maps") {
+        if (!mapsApiKey) throw new Error("mapsApiKey is required (Google Cloud → APIs & Services → Credentials → Create credentials → API key).");
+        fs.mkdirSync(path.dirname(MAPS_CONFIG_PATH), { recursive: true });
+        fs.writeFileSync(MAPS_CONFIG_PATH, JSON.stringify({ apiKey: mapsApiKey.trim() }, null, 2), { mode: 0o600 });
+        return { saved: MAPS_CONFIG_PATH, next: "Try maps_geocode or maps_search_places." };
       }
       if (action === "configure_ads") {
         if (!developerToken) throw new Error("developerToken is required (Google Ads → Tools → API Center).");

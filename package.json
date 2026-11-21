@@ -1,6 +1,6 @@
 {
   "name": "google-workspace-mcp",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "MCP connector for Gmail, Google Drive, Docs, Sheets and Slides",
   "type": "module",
   "main": "dist/index.js",
@@ -18,6 +18,8 @@
   "dependencies": {
     "@googleapis/analyticsadmin": "^22.0.2",
     "@googleapis/analyticsdata": "^10.1.1",
+    "@googleapis/calendar": "^20.2.0",
+    "@googleapis/chat": "^51.4.1",
     "@googleapis/docs": "^14.1.1",
     "@googleapis/drive": "^27.1.0",
     "@googleapis/gmail": "^22.1.0",

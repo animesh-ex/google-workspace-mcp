@@ -9,15 +9,20 @@ import { registerSlides } from "./tools/slides.js";
 import { registerSetup } from "./tools/setup.js";
 import { registerAnalytics } from "./tools/analytics.js";
 import { registerAds } from "./tools/ads.js";
+import { registerCalendar } from "./tools/calendar.js";
+import { registerChat } from "./tools/chat.js";
+import { registerMaps } from "./tools/maps.js";
 
 const server = new McpServer(
-  { name: "google-workspace", version: "1.1.2" },
+  { name: "google-workspace", version: "1.2.0" },
   {
     instructions:
       "Google connector: Gmail (search/read/send/reply/drafts/attachments/labels), Drive (search/organize/upload/download/share), Docs, Sheets and Slides (create/read/edit/analyze), " +
+      "Google Calendar (calendar_*: list/search events, create/update/cancel, Meet links, RSVP, free time), Google Chat (chat_*: spaces, read/search/send messages, DMs), " +
+      "Google Maps (maps_*: place search, nearby, details and reviews, geocoding, directions, distance matrix), " +
       "Google Analytics 4 (ga_*: list properties, overview, custom reports, realtime, metadata) and Google Ads (ads_*: accounts, campaign/ad group/keyword/ad/search-term performance, GAQL queries, pause/enable, budgets). " +
-      "If a tool says the user is not signed in or is missing permissions, use google_setup (status, import_credentials, sign_in, configure_ads). Tools accept file IDs or full Google URLs. " +
-      "Confirm recipients and content with the user before sending email or sharing files, and confirm before any ads_set_status or ads_set_campaign_budget call because it changes ad spend.",
+      "If a tool says the user is not signed in, is missing permissions, or Ads/Maps aren't configured, use google_setup (status, import_credentials, sign_in, configure_ads, configure_maps). Tools accept file IDs or full Google URLs. " +
+      "Confirm with the user before sending email or Chat messages, sharing files, inviting people to or cancelling calendar events, and before any ads_set_status or ads_set_campaign_budget call because it changes ad spend.",
   },
 );
 
@@ -26,6 +31,9 @@ registerDrive(server);
 registerDocs(server);
 registerSheets(server);
 registerSlides(server);
+registerCalendar(server);
+registerChat(server);
+registerMaps(server);
 registerAnalytics(server);
 registerAds(server);
 registerSetup(server);

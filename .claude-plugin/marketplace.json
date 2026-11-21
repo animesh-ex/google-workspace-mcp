@@ -5,9 +5,9 @@
   "plugins": [
     {
       "name": "google-workspace",
-      "version": "1.1.2",
+      "version": "1.2.0",
       "source": "./plugin",
-      "description": "Gmail, Drive, Docs, Sheets, Slides, Google Analytics and Google Ads connector for Claude Code."
+      "description": "Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Maps, Google Analytics and Google Ads connector for Claude Code."
     }
   ]
 }

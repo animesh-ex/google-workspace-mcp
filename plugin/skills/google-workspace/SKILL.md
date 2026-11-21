@@ -1,6 +1,6 @@
 ---
 name: google-workspace
-description: Use for any task in the user's own Gmail, Google Drive, Docs, Sheets, Slides, Google Analytics 4 or Google Ads through the google-workspace plugin tools — GA4 traffic/conversion reports, Google Ads campaign, keyword and search-term performance, pausing or budgeting campaigns — reading, searching, sending or replying to email (with attachments), creating/editing/reading/analyzing Docs, Sheets and Slides, sharing files, and organizing Drive folders.
+description: Use for any task in the user's own Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Maps, Google Analytics 4 or Google Ads through the google-workspace plugin tools — scheduling meetings, checking the calendar, finding free time, reading or sending Chat messages, searching places, directions and travel times, GA4 traffic/conversion reports, Google Ads campaign, keyword and search-term performance, pausing or budgeting campaigns — reading, searching, sending or replying to email (with attachments), creating/editing/reading/analyzing Docs, Sheets and Slides, sharing files, and organizing Drive folders.
 ---
 
 # Google Workspace plugin
@@ -23,6 +23,22 @@ Any tool error saying "not signed in" or "OAuth client file not found" → run t
 - **Fill a template:** `drive_copy` the template → `docs_replace_text` / `slides_replace_text` on `{{placeholders}}`.
 - **Organize:** `drive_create_folder` → pass `folderId` to any create tool, or `drive_move` existing files.
 - **Share:** `drive_share` (user/group/domain/anyone; reader/commenter/writer) → return the `link`.
+
+## Google Calendar (`calendar_*`)
+- `calendar_list_events` defaults to the next 7 days; pass `timeMin`/`timeMax` and `query` to search. Use `calendar_list_calendars` for shared/team calendars.
+- `calendar_create_event`: ISO times with the user's time zone (`timeZone`), `attendees` (they get invites), `addMeet: true` for a Meet link, `recurrence` RRULEs, `reminderMinutes`. Confirm guests, time and time zone before creating.
+- `calendar_update_event` patches only what you pass; use `addAttendees`/`removeAttendees` to change guests. `calendar_delete_event` cancels and notifies guests — confirm first.
+- `calendar_find_free_time` for scheduling across people; `calendar_respond` to RSVP; `calendar_quick_add` for natural-language events.
+
+## Google Chat (`chat_*`)
+- `chat_list_spaces` → space names (`spaces/...`). `chat_list_messages` reads a space or a DM (`dmWithEmail`); `chat_search_messages` finds text.
+- `chat_send_message` posts to a space or DMs a person by `toEmail`; pass `threadName` to reply in a thread. Confirm recipient and text first.
+- Chat only works for Google Workspace accounts, and the Cloud project needs the Chat API configured (see setup).
+
+## Google Maps (`maps_*`)
+- Needs a Maps Platform API key (`google_setup` → `configure_maps`).
+- `maps_search_places` ("jewelry stores in Surat"), `maps_nearby` (by type around a point), `maps_place_details` (hours, phone, reviews), `maps_geocode`, `maps_directions` (traffic-aware time, steps, Maps link), `maps_distance_matrix` (many-to-many travel times).
+- Always give the user the `mapsUrl` links.
 
 ## Google Analytics 4 (`ga_*`)
 - Start with `ga_list_properties` to get the property ID.

@@ -6,3 +6,4 @@ token.json
 ads.json
 client_secret_*.json
 *.log
+maps.json
