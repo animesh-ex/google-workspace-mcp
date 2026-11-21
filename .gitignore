@@ -1,0 +1,8 @@
+node_modules/
+dist/
+release/
+credentials.json
+token.json
+ads.json
+client_secret_*.json
+*.log
