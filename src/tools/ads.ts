@@ -3,7 +3,7 @@ import path from "node:path";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getAuthClient, CONFIG_DIR } from "../auth.js";
-import { tool, READ, DESTRUCTIVE } from "../util.js";
+import { tool, READ, WRITE, DESTRUCTIVE } from "../util.js";
 
 const API_VERSION = process.env.GOOGLE_ADS_API_VERSION || "v26";
 export const ADS_CONFIG_PATH = path.join(CONFIG_DIR, "ads.json");
@@ -210,6 +210,28 @@ export function registerAds(server: McpServer) {
       const r = await adsFetch(`customers/${c}/${service}:mutate`, { operations, validateOnly: a.validateOnly }, a.loginCustomerId);
       return { validateOnly: a.validateOnly, status: a.status, updated: (r.results || []).map((x: any) => x.resourceName) };
     }, DESTRUCTIVE);
+
+  tool(server, "ads_add_negative_keywords",
+    "Add negative keywords to a campaign so ads stop showing for those searches (e.g. from ads_search_terms waste). Use validateOnly=true to dry-run. Confirm the list with the user first.",
+    {
+      ...customerShape, campaignId: z.string(),
+      keywords: z.array(z.string()).min(1).max(200),
+      matchType: z.enum(["EXACT", "PHRASE", "BROAD"]).default("PHRASE"),
+      validateOnly: z.boolean().default(false),
+    },
+    async (a) => {
+      const c = cid(a.customerId);
+      const campaign = `customers/${c}/campaigns/${cid(a.campaignId)}`;
+      const r = await adsFetch(`customers/${c}/campaignCriteria:mutate`, {
+        operations: a.keywords.map((text) => ({ create: { campaign, negative: true, keyword: { text: text.trim(), matchType: a.matchType } } })),
+        validateOnly: a.validateOnly, partialFailure: true,
+      }, a.loginCustomerId);
+      return {
+        validateOnly: a.validateOnly, campaignId: a.campaignId, matchType: a.matchType,
+        added: (r.results || []).filter((x: any) => x.resourceName).length,
+        partialFailures: r.partialFailureError?.message,
+      };
+    }, WRITE);
 
   tool(server, "ads_set_campaign_budget",
     "Change a campaign's daily budget (in account currency). Shared budgets affect every campaign using them. Use validateOnly=true to dry-run. Always confirm the amount with the user first.",

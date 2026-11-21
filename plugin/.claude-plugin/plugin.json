@@ -1,10 +1,10 @@
 {
   "name": "google-workspace",
-  "version": "1.2.0",
-  "description": "Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Maps, Google Analytics 4 and Google Ads for Claude: email with attachments, Docs/Sheets/Slides creation and analysis, Drive sharing, calendar scheduling, Chat messages, places and directions, analytics reports and ad performance.",
+  "version": "1.3.0",
+  "description": "Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Google Analytics 4 and Google Ads for Claude: email with attachments, Docs/Sheets/Slides, Drive sharing, meeting scheduling and invites, Chat, contacts, business details and AI summaries from Maps, chatbot building, analytics reports and ad management.",
   "author": { "name": "animesh-ex" },
   "repository": "https://github.com/animesh-ex/google-workspace-mcp",
   "homepage": "https://github.com/animesh-ex/google-workspace-mcp",
   "license": "MIT",
-  "keywords": ["google", "gmail", "drive", "docs", "sheets", "slides", "workspace", "calendar", "chat", "maps", "analytics", "ads", "mcp"]
+  "keywords": ["google", "gmail", "drive", "docs", "sheets", "slides", "workspace", "calendar", "chat", "maps", "contacts", "people", "dialogflow", "analytics", "ads", "mcp"]
 }

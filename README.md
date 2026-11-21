@@ -1,6 +1,6 @@
 # Google Workspace MCP connector
 
-An MCP server and Claude plugin that connects Claude to **Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Maps, Google Analytics 4 and Google Ads**. It runs locally and signs in with your own Google account. Your tokens stay on your machine.
+An MCP server and Claude plugin that connects Claude to **Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Google Analytics 4 and Google Ads**. It runs locally and signs in with your own Google account. Your tokens stay on your machine.
 
 Requires **Node.js 20+**.
 
@@ -29,7 +29,7 @@ Run `node plugin/server/index.mjs` as a stdio MCP server (see "Add it to Claude"
 
 After changing code in `src/`, run `npm run build:plugin` to refresh `plugin/server/`.
 
-## What it can do (92 tools)
+## What it can do (110 tools, 7 skills)
 
 | Service | Tools |
 |---|---|
@@ -43,8 +43,12 @@ After changing code in `src/`, run `npm run build:plugin` to refresh `plugin/ser
 | **Google Analytics 4** | `ga_list_properties`, `ga_overview` (users, sessions, engagement, key events, revenue by channel/source/campaign/page/country/device/date…), `ga_run_report` (any dimensions/metrics, filters, period comparison), `ga_realtime`, `ga_get_metadata` |
 | **Google Calendar** | `calendar_list_calendars`, `calendar_list_events` (window + search), `calendar_get_event`, `calendar_create_event` (attendees, Google Meet link, recurrence, reminders), `calendar_update_event` (add/remove guests), `calendar_delete_event`, `calendar_respond` (RSVP), `calendar_quick_add`, `calendar_find_free_time` |
 | **Google Chat** | `chat_list_spaces`, `chat_list_messages` (space or DM), `chat_search_messages`, `chat_send_message` (space, DM by email, thread reply), `chat_list_members` — Google Workspace accounts only |
-| **Google Maps** | `maps_search_places`, `maps_nearby`, `maps_place_details` (hours, phone, reviews), `maps_geocode` (and reverse), `maps_directions` (traffic-aware, steps, Maps link), `maps_distance_matrix` — needs a Maps Platform API key |
-| **Google Ads** | `ads_list_accounts`, `ads_campaign_performance`, `ads_ad_group_performance`, `ads_keyword_performance`, `ads_search_terms`, `ads_ad_performance` (all with cost/conversion and ROAS), `ads_query` (any read-only GAQL), `ads_set_status` (pause/enable campaigns, ad groups, ads, keywords), `ads_set_campaign_budget` |
+| **Google Contacts** (People API) | `contacts_search` (your contacts, people you've emailed, and the Workspace directory), `contacts_list`, `contacts_get`, `contacts_create`, `contacts_update`, `contacts_delete`, `contacts_groups` (labels) |
+| **Google Maps** | `maps_search_places` (up to 60 results, optional AI review summaries), `maps_nearby`, `maps_place_details` (every business field: contact, hours, price range, reviews, Google AI overview and review summary, amenities, payment, parking, accessibility), `maps_place_photos`, `maps_geocode` (and reverse), `maps_directions` (traffic-aware, steps, Maps link), `maps_distance_matrix` — needs a Maps Platform API key |
+| **Dialogflow** | ES: `dialogflow_get_agent`, `dialogflow_list_intents`, `dialogflow_detect_intent`, `dialogflow_create_intent`, `dialogflow_update_intent`, `dialogflow_delete_intent`; CX: `dialogflow_cx_list_agents`, `dialogflow_cx_list_intents`, `dialogflow_cx_detect_intent` |
+| **Google Ads** | `ads_list_accounts`, `ads_campaign_performance`, `ads_ad_group_performance`, `ads_keyword_performance`, `ads_search_terms`, `ads_ad_performance` (all with cost/conversion and ROAS), `ads_query` (any read-only GAQL), `ads_add_negative_keywords`, `ads_set_status` (pause/enable campaigns, ad groups, ads, keywords), `ads_set_campaign_budget` |
+
+**Skills** (teach Claude the workflows): `setup` (connect Google), `google-workspace` (general), `calendar-scheduling` (meetings and invites), `maps-business-research` (business details and summaries), `google-contacts`, `dialogflow` (build and test bots), `google-ads` (performance reviews, wasted spend, safe changes).
 
 Every tool takes either a file ID or a full Google URL. Create tools take an optional `folderId` so new files land in the right Drive folder.
 
@@ -53,7 +57,7 @@ Every tool takes either a file ID or a full Google URL. Create tools take an opt
 ### 1. Create a Google Cloud OAuth client
 
 1. Go to <https://console.cloud.google.com/> and create (or pick) a project.
-2. **APIs & Services → Library**: enable **Gmail API**, **Google Drive API**, **Google Docs API**, **Google Sheets API**, **Google Slides API**, **Google Calendar API**, **Google Chat API**, **Google Analytics Data API**, **Google Analytics Admin API** and **Google Ads API**. For Maps also enable **Places API (New)**, **Geocoding API** and **Routes API**.
+2. **APIs & Services → Library**: enable **Gmail API**, **Google Drive API**, **Google Docs API**, **Google Sheets API**, **Google Slides API**, **Google Calendar API**, **Google Chat API**, **People API**, **Dialogflow API**, **Google Analytics Data API**, **Google Analytics Admin API** and **Google Ads API**. For Maps also enable **Places API (New)**, **Geocoding API** and **Routes API**.
 3. **APIs & Services → OAuth consent screen** (or "Google Auth Platform"): choose **External**, fill in the app name and your email, and under **Test users** add the Google account(s) you'll sign in with.
 4. **Credentials → Create credentials → OAuth client ID**. Pick the application type **Desktop app**. Download the JSON.
 5. Save the file as:
@@ -126,14 +130,14 @@ Restart Claude, then try prompts like:
 
 ## Scopes requested
 
-`gmail.modify` (read, send, label; it **can't** permanently delete mail), `drive`, `documents`, `spreadsheets`, `presentations`, `analytics.readonly` (GA4 is read-only), `adwords` (Google Ads reporting and changes), `calendar` (read and manage events), `chat.spaces.readonly`, `chat.messages`, `chat.memberships.readonly`, `chat.spaces.create` (read and send Chat messages, start DMs). Maps uses an API key, not a scope.
+`gmail.modify` (read, send, label; it **can't** permanently delete mail), `drive`, `documents`, `spreadsheets`, `presentations`, `analytics.readonly` (GA4 is read-only), `adwords` (Google Ads reporting and changes), `calendar` (read and manage events), `chat.spaces.readonly`, `chat.messages`, `chat.memberships.readonly`, `chat.spaces.create` (read and send Chat messages, start DMs), `contacts`, `contacts.other.readonly`, `directory.readonly` (People API), `dialogflow` (Dialogflow agents). Maps uses an API key, not a scope.
 
 If you signed in before Analytics/Ads were added, `google_setup` → `status` lists `missingScopes`; run `sign_in` again to grant them.
 
 ## Safety notes
 
 - Destructive tools (`drive_trash`, `drive_update_permission`, `sheets_clear`, `docs_delete_range`, `slides_manage_slide`, and `sheets_manage_tab`) are marked `destructiveHint` so clients can ask before running them. Drive deletes go to the trash, never permanent deletion.
-- Claude Code asks before each tool call unless you allow it. Consider leaving `gmail_send`, `gmail_reply`, `drive_share`, `chat_send_message`, `calendar_create_event`, `calendar_delete_event`, `ads_set_status` and `ads_set_campaign_budget` on "ask".
+- Claude Code asks before each tool call unless you allow it. Consider leaving `gmail_send`, `gmail_reply`, `drive_share`, `chat_send_message`, `calendar_create_event`, `calendar_delete_event`, `ads_set_status`, `ads_set_campaign_budget`, `ads_add_negative_keywords`, `contacts_delete` and `dialogflow_delete_intent` on "ask".
 - Google Ads changes take effect immediately and affect spend. Both Ads change tools support `validateOnly: true` for a dry run.
 - `token.json` gives access to your account. Keep it private.
 

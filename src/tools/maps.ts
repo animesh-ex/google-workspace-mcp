@@ -57,21 +57,33 @@ const MODE_URL: Record<string, string> = { DRIVE: "driving", WALK: "walking", BI
 
 export function registerMaps(server: McpServer) {
   tool(server, "maps_search_places",
-    "Search Google Maps for places by text (e.g. 'jewelry stores in Surat', 'coffee near Times Square'). Returns address, rating, hours, phone, website and a Maps link.",
+    "Search Google Maps for businesses/places by text (e.g. 'jewelry stores in Surat', 'diamond wholesalers Mumbai'). Returns address, rating, review count, hours, phone, website and Maps link; up to 60 results with paging. includeSummaries adds Google's AI review summary when available.",
     {
-      query: z.string(), maxResults: z.number().int().min(1).max(20).default(10),
+      query: z.string(), maxResults: z.number().int().min(1).max(60).default(20),
       near: latLng.optional().describe("Bias results around this point"), radiusMeters: z.number().default(5000),
       openNow: z.boolean().optional(), minRating: z.number().min(0).max(5).optional(),
+      includedType: z.string().optional().describe("Restrict to one place type, e.g. 'jewelry_store'"),
+      includeSummaries: z.boolean().default(false),
     },
-    async ({ query, maxResults, near, radiusMeters, openNow, minRating }) => {
-      const r = await call("https://places.googleapis.com/v1/places:searchText", {
-        fieldMask: PLACE_FIELDS.split(",").map((f) => `places.${f}`).join(","),
-        body: {
-          textQuery: query, pageSize: maxResults, openNow, minRating,
-          locationBias: near ? { circle: { center: { latitude: near.lat, longitude: near.lng }, radius: radiusMeters } } : undefined,
-        },
-      });
-      return (r.places || []).map(place);
+    async ({ query, maxResults, near, radiusMeters, openNow, minRating, includedType, includeSummaries }) => {
+      const fields = PLACE_FIELDS + (includeSummaries ? ",reviewSummary.text.text,generativeSummary.overview.text,editorialSummary" : "");
+      const out: any[] = [];
+      let pageToken: string | undefined;
+      do {
+        const r = await call("https://places.googleapis.com/v1/places:searchText", {
+          fieldMask: fields.split(",").map((f) => `places.${f}`).join(",") + ",nextPageToken",
+          body: {
+            textQuery: query, pageSize: Math.min(20, maxResults - out.length), openNow, minRating, includedType, pageToken,
+            locationBias: near ? { circle: { center: { latitude: near.lat, longitude: near.lng }, radius: radiusMeters } } : undefined,
+          },
+        });
+        out.push(...(r.places || []).map((p: any) => ({
+          ...place(p),
+          ...(includeSummaries ? { aiReviewSummary: p.reviewSummary?.text?.text, aiOverview: p.generativeSummary?.overview?.text, editorialSummary: p.editorialSummary?.text } : {}),
+        })));
+        pageToken = r.nextPageToken;
+      } while (pageToken && out.length < maxResults);
+      return { count: out.length, places: out };
     }, READ);
 
   tool(server, "maps_nearby", "Find places of given types around a point (e.g. types ['restaurant'] or ['jewelry_store']).",
@@ -84,16 +96,45 @@ export function registerMaps(server: McpServer) {
       return (r.places || []).map(place);
     }, READ);
 
-  tool(server, "maps_place_details", "Full details for one place by placeId, including recent reviews.",
-    { placeId: z.string(), includeReviews: z.boolean().default(true) },
-    async ({ placeId, includeReviews }) => {
-      const r = await call(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`, {
-        fieldMask: PLACE_FIELDS + (includeReviews ? ",reviews.rating,reviews.text.text,reviews.relativePublishTimeDescription,reviews.authorAttribution.displayName,editorialSummary" : ""),
-      });
+  tool(server, "maps_place_details",
+    "All business details for one place: contact info, hours, price range, ratings, up to 5 recent reviews, Google's AI summaries (overview, review summary, neighborhood), amenities, payment/parking/accessibility options, service options, address parts and photo references.",
+    { placeId: z.string(), language: z.string().optional().describe("e.g. 'en'") },
+    async ({ placeId, language }) => {
+      const r = await call(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}${language ? `?languageCode=${encodeURIComponent(language)}` : ""}`, { fieldMask: "*" });
+      const flags = Object.fromEntries(Object.entries(r).filter(([, v]) => typeof v === "boolean"));
       return {
-        ...place(r), summary: r.editorialSummary?.text,
-        reviews: r.reviews?.map((v: any) => ({ rating: v.rating, when: v.relativePublishTimeDescription, author: v.authorAttribution?.displayName, text: v.text?.text })),
+        ...place(r),
+        shortAddress: r.shortFormattedAddress, types: r.types, plusCode: r.plusCode?.globalCode,
+        addressParts: r.addressComponents?.map((c: any) => ({ [c.types?.[0] || "part"]: c.longText })),
+        utcOffsetMinutes: r.utcOffsetMinutes,
+        priceRange: r.priceRange ? [r.priceRange.startPrice, r.priceRange.endPrice].filter(Boolean).map((p: any) => `${p.currencyCode} ${p.units}`).join(" – ") : undefined,
+        aiOverview: r.generativeSummary?.overview?.text, aiDescription: r.generativeSummary?.description?.text,
+        aiReviewSummary: r.reviewSummary?.text?.text, neighborhoodSummary: r.neighborhoodSummary?.overview?.content?.text,
+        editorialSummary: r.editorialSummary?.text,
+        serviceOptionsAndAmenities: Object.keys(flags).length ? flags : undefined,
+        paymentOptions: r.paymentOptions, parkingOptions: r.parkingOptions, accessibilityOptions: r.accessibilityOptions,
+        secondaryHours: r.regularSecondaryOpeningHours?.map((h: any) => ({ type: h.secondaryHoursType, hours: h.weekdayDescriptions })),
+        links: r.googleMapsLinks,
+        reviews: r.reviews?.map((v: any) => ({ rating: v.rating, when: v.relativePublishTimeDescription, author: v.authorAttribution?.displayName, text: v.text?.text || v.originalText?.text })),
+        photoCount: r.photos?.length, photoNames: r.photos?.slice(0, 10).map((p: any) => p.name),
       };
+    }, READ);
+
+  tool(server, "maps_place_photos", "Get viewable image URLs for a place's photos (from maps_place_details photoNames, or by placeId).",
+    { placeId: z.string().optional(), photoNames: z.array(z.string()).optional(), max: z.number().int().min(1).max(10).default(5), maxWidthPx: z.number().int().min(100).max(4800).default(1200) },
+    async ({ placeId, photoNames, max, maxWidthPx }) => {
+      let names = photoNames;
+      if (!names?.length) {
+        if (!placeId) throw new Error("Provide placeId or photoNames.");
+        const r = await call(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`, { fieldMask: "photos" });
+        names = (r.photos || []).map((p: any) => p.name);
+      }
+      const urls = [];
+      for (const n of names!.slice(0, max)) {
+        const r = await call(`https://places.googleapis.com/v1/${n}/media?maxWidthPx=${maxWidthPx}&skipHttpRedirect=true`);
+        urls.push(r.photoUri);
+      }
+      return { photos: urls };
     }, READ);
 
   tool(server, "maps_geocode", "Convert an address to coordinates, or coordinates to an address (reverse geocode).",

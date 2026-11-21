@@ -1,18 +1,26 @@
 ---
 name: google-workspace
-description: Use for any task in the user's own Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Maps, Google Analytics 4 or Google Ads through the google-workspace plugin tools — scheduling meetings, checking the calendar, finding free time, reading or sending Chat messages, searching places, directions and travel times, GA4 traffic/conversion reports, Google Ads campaign, keyword and search-term performance, pausing or budgeting campaigns — reading, searching, sending or replying to email (with attachments), creating/editing/reading/analyzing Docs, Sheets and Slides, sharing files, and organizing Drive folders.
+description: Use for tasks in the user's own Gmail, Google Drive, Docs, Sheets, Slides, Google Chat or Google Analytics 4 through the google-workspace plugin tools — reading, searching, sending or replying to email (with attachments), creating/editing/reading/analyzing Docs, Sheets and Slides, sharing files, organizing Drive folders, reading or sending Chat messages, and GA4 traffic/conversion reports. For meetings use calendar-scheduling, for places use maps-business-research, for people use google-contacts, for chatbots use dialogflow, for ads use google-ads.
 ---
 
 # Google Workspace plugin
 
-The `google-workspace` MCP server exposes tools prefixed `gmail_`, `drive_`, `docs_`, `sheets_`, `slides_` and `google_setup`.
+The `google-workspace` MCP server exposes `gmail_`, `drive_`, `docs_`, `sheets_`, `slides_`, `calendar_`, `chat_`, `contacts_`, `maps_`, `ga_`, `ads_`, `dialogflow_` tools and `google_setup`.
+
+Dedicated skills cover these areas in depth; load the matching one:
+- **calendar-scheduling:** meetings, invites, availability.
+- **maps-business-research:** businesses, reviews, AI summaries, directions.
+- **google-contacts:** finding people's emails and phones, and managing contacts.
+- **dialogflow:** chatbot intents and testing.
+- **google-ads:** ad performance and changes.
 
 ## If not connected
-Any tool error saying "not signed in" or "OAuth client file not found" → run the `/google-workspace:setup` flow (call `google_setup` with `status`, then `import_credentials` / `sign_in`).
+Any tool error saying "not signed in", "missing scopes", "OAuth client file not found", or that Ads/Maps aren't configured → run the setup skill (`google_setup` with `status`, then `import_credentials` / `sign_in` / `configure_ads` / `configure_maps`).
 
 ## Before acting
-- **Sending, replying, sharing** reach other people. Confirm recipients, subject, body, attachments and share roles with the user before calling `gmail_send`, `gmail_reply`, `gmail_send_draft` or `drive_share`, unless they already gave them exactly. When unsure, use `gmail_create_draft` or `gmail_reply` with `sendNow: false`.
-- Deleting is always recoverable here: `drive_trash` moves to trash; Gmail `trash` is recoverable for 30 days.
+- **Sending, replying, sharing, messaging** reach other people. Confirm recipients, subject, body, attachments and share roles with the user before calling `gmail_send`, `gmail_reply`, `gmail_send_draft`, `chat_send_message` or `drive_share`, unless they already gave them exactly. When unsure, use `gmail_create_draft` or `gmail_reply` with `sendNow: false`.
+- If the user names a person instead of an email, resolve it with `contacts_search` first.
+- Deleting is recoverable here: `drive_trash` moves to trash; Gmail `trash` is recoverable for 30 days.
 
 ## Recipes
 - **Reply with a Drive file attached:** `gmail_search` → `gmail_read_thread` → `drive_search` → `gmail_reply` with `driveFileIds`.
@@ -24,33 +32,15 @@ Any tool error saying "not signed in" or "OAuth client file not found" → run t
 - **Organize:** `drive_create_folder` → pass `folderId` to any create tool, or `drive_move` existing files.
 - **Share:** `drive_share` (user/group/domain/anyone; reader/commenter/writer) → return the `link`.
 
-## Google Calendar (`calendar_*`)
-- `calendar_list_events` defaults to the next 7 days; pass `timeMin`/`timeMax` and `query` to search. Use `calendar_list_calendars` for shared/team calendars.
-- `calendar_create_event`: ISO times with the user's time zone (`timeZone`), `attendees` (they get invites), `addMeet: true` for a Meet link, `recurrence` RRULEs, `reminderMinutes`. Confirm guests, time and time zone before creating.
-- `calendar_update_event` patches only what you pass; use `addAttendees`/`removeAttendees` to change guests. `calendar_delete_event` cancels and notifies guests — confirm first.
-- `calendar_find_free_time` for scheduling across people; `calendar_respond` to RSVP; `calendar_quick_add` for natural-language events.
-
 ## Google Chat (`chat_*`)
 - `chat_list_spaces` → space names (`spaces/...`). `chat_list_messages` reads a space or a DM (`dmWithEmail`); `chat_search_messages` finds text.
 - `chat_send_message` posts to a space or DMs a person by `toEmail`; pass `threadName` to reply in a thread. Confirm recipient and text first.
 - Chat only works for Google Workspace accounts, and the Cloud project needs the Chat API configured (see setup).
-
-## Google Maps (`maps_*`)
-- Needs a Maps Platform API key (`google_setup` → `configure_maps`).
-- `maps_search_places` ("jewelry stores in Surat"), `maps_nearby` (by type around a point), `maps_place_details` (hours, phone, reviews), `maps_geocode`, `maps_directions` (traffic-aware time, steps, Maps link), `maps_distance_matrix` (many-to-many travel times).
-- Always give the user the `mapsUrl` links.
 
 ## Google Analytics 4 (`ga_*`)
 - Start with `ga_list_properties` to get the property ID.
 - `ga_overview` for a quick summary by channel, source/medium, campaign, page, landing page, country, device, event, item, or by date/week/month.
 - `ga_run_report` for anything custom; use `ga_get_metadata` (with `search`) to find dimension/metric API names. GA4 calls conversions `keyEvents`. Pass `compareStartDate`/`compareEndDate` for period-over-period.
 - `ga_realtime` for the last 30 minutes.
-
-## Google Ads (`ads_*`)
-- Needs a developer token: if an ads tool says it isn't configured, ask the user for their token (Google Ads → Tools → API Center, on a manager account) and call `google_setup` with `configure_ads`.
-- `ads_list_accounts` → customer IDs. If accounts sit under a manager, pass `loginCustomerId` or save it with `configure_ads`.
-- Reports: `ads_campaign_performance`, `ads_ad_group_performance`, `ads_keyword_performance`, `ads_search_terms` (wasted spend, negative-keyword ideas), `ads_ad_performance`. All include cost per conversion and ROAS. Anything else: `ads_query` with GAQL.
-- **Changes cost money.** `ads_set_status` (ENABLED restarts spend) and `ads_set_campaign_budget` need an explicit yes from the user with the exact campaigns and amounts. Run with `validateOnly: true` first when unsure.
-- Combine with GA4: compare Ads cost with `ga_overview` breakdown `campaign` or `source_medium` to see on-site behaviour of paid traffic.
 
 All tools accept IDs or full Google URLs. Return file links (`url`/`webViewLink`) to the user after creating anything.

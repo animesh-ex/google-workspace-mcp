@@ -18,6 +18,10 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/chat.messages", // Chat: read and send messages
   "https://www.googleapis.com/auth/chat.memberships.readonly", // Chat: list members
   "https://www.googleapis.com/auth/chat.spaces.create", // Chat: start a direct message
+  "https://www.googleapis.com/auth/contacts", // People API: read and manage contacts
+  "https://www.googleapis.com/auth/contacts.other.readonly", // People API: "other contacts" (people you've emailed)
+  "https://www.googleapis.com/auth/directory.readonly", // People API: Workspace company directory
+  "https://www.googleapis.com/auth/dialogflow", // Dialogflow ES and CX agents
 ];
 
 export const CONFIG_DIR =
