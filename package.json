@@ -1,6 +1,6 @@
 {
   "name": "google-workspace-mcp",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "MCP connector for Gmail, Google Drive, Docs, Sheets and Slides",
   "type": "module",
   "main": "dist/index.js",

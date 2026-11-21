@@ -1,35 +1,40 @@
 # Google Workspace for Claude
 
-Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Apps Script, Google Analytics 4 and Google Ads** (117 tools, 8 skills).
+Version 1.4.1 · 117 tools · 8 skills · Full docs: <https://github.com/animesh-ex/google-workspace-mcp>
 
-- **Gmail:** search, read, send, reply, drafts, labels, attachments (from your computer or Drive).
-- **Drive:** search, organize folders, upload/download, copy/move/rename, trash, and share any file.
-- **Docs / Sheets / Slides:** create, read, edit and analyze. Docs from Markdown, sheet statistics and charts, full slide decks with speaker notes.
-- **Google Calendar:** see and search events, schedule meetings with Meet links, update guests, RSVP, find free time.
-- **Google Chat:** list spaces, read and search messages, send to a space or DM someone (Workspace accounts).
-- **Google Contacts:** find anyone's email or phone (contacts, people you've emailed, company directory), add, update and group contacts.
-- **Google Maps:** search businesses, pull every business detail incl. Google's AI summaries and reviews, photos, nearby places, geocoding, directions with traffic, distance matrix.
-- **Dialogflow:** inspect and test ES/CX chatbots, create and improve intents.
-- **Apps Script:** generate scripts for Google Sheets (automations, custom functions, menus, triggers), install them bound to a sheet, deploy, run and debug.
-- **Google Analytics 4:** properties, traffic and conversion overviews, custom reports, realtime.
-- **Google Ads:** campaign, keyword, ad and search-term performance with ROAS, GAQL queries, negative keywords, pause/enable and budget changes (Claude asks first).
+Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Analytics 4 and Google Ads**. It runs on your computer, and your credentials never leave it.
 
-Skills: connect Google, general Workspace, meeting scheduling, Maps business research, contacts, Dialogflow, Google Ads and Apps Script.
+## What it does
+- **Gmail:** search, read, send and reply (with attachments from your computer or Drive), drafts, labels.
+- **Drive:** search, organize folders, upload and download, copy, move, rename, trash, and share any file.
+- **Docs, Sheets, Slides:** create, read, edit and analyze. Docs from Markdown, sheet statistics and charts, full slide decks with speaker notes.
+- **Calendar:** see and search events, schedule meetings with Meet links and invites, change guests, RSVP, find free time.
+- **Chat:** list spaces, read and search messages, post to a space or DM someone (Workspace accounts).
+- **Contacts:** find anyone's email or phone across your contacts, people you've emailed and the company directory; add, update and label contacts.
+- **Maps:** search businesses and pull every detail, including Google's AI summaries, reviews and photos; nearby places, geocoding, directions with traffic, travel-time matrix.
+- **Apps Script:** generate scripts for Google Sheets (automations, custom formulas, menus, triggers), install them on the sheet, deploy, run and debug.
+- **Dialogflow:** inspect and test ES and CX chatbots; create and improve intents.
+- **Google Analytics 4:** traffic and conversion overviews, custom reports with period comparison, realtime.
+- **Google Ads:** campaign, keyword, ad and search-term performance with ROAS, GAQL queries, negative keywords, pause/enable, budgets.
+
+## Skills
+`setup` · `google-workspace` · `calendar-scheduling` · `google-contacts` · `maps-business-research` · `apps-script` · `dialogflow` · `google-ads`
+
+Claude picks the right skill from what you ask. It confirms before sending email or Chat messages, sharing files, inviting or cancelling meeting guests, running scripts that change data, or making any Google Ads change.
 
 ## Requirements
-
-- **Node.js 20+** installed (the connector runs locally with `node`).
-- A Google Cloud **Desktop app** OAuth client (`client_secret_*.json`) with the APIs above enabled.
-- For Google Chat: the Chat API configured in your Cloud project (Workspace accounts only).
-- For Google Maps: a Maps Platform API key (billing enabled).
-- For Apps Script: "Google Apps Script API" switched on at script.google.com/home/usersettings.
-- For Google Ads: a developer token from a Google Ads manager account (Tools → API Center).
+- **Node.js 20+.**
+- A Google Cloud **Desktop app** OAuth client (`client_secret_*.json`) with the APIs you need enabled.
+- **Optional extras:**
+  - Chat: the Chat API configured in your Cloud project (Workspace accounts only).
+  - Apps Script: "Google Apps Script API" switched on at script.google.com/home/usersettings.
+  - Maps: a Maps Platform API key, with billing enabled.
+  - Google Ads: a developer token from a manager account (Tools → API Center).
 
 ## Get started
+Say **"connect Google"** (or run `/google-workspace:setup`). Claude imports your downloaded client file, opens Google sign-in in your browser, checks permissions, and helps configure the extras.
 
-Ask Claude to **"connect Google"** (or run `/google-workspace:setup`). Claude imports your downloaded client file, opens Google sign-in in your browser, and checks the connection.
-
-Credentials and the sign-in token are stored only on your computer in `~/.google-workspace-mcp/`.
+Credentials, the sign-in token and any API keys are stored only in `~/.google-workspace-mcp/`.
 
 ## Environment variables (optional)
 

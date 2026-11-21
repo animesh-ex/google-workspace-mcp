@@ -92,6 +92,15 @@ export function resetAuthCache() {
   cached = null;
 }
 
+/** Google Cloud project number of the OAuth client (the numeric prefix of a Google client ID), if known. */
+export function cloudProjectNumber(): string | undefined {
+  try {
+    return loadClientSecrets().client_id.match(/^(\d+)-/)?.[1];
+  } catch {
+    return undefined;
+  }
+}
+
 export function authStatus() {
   let clientConfigured = false;
   let clientError: string | undefined;
@@ -112,6 +121,7 @@ export function authStatus() {
     credentialsPath: CREDENTIALS_PATH,
     clientConfigured,
     clientError,
+    cloudProjectNumber: cloudProjectNumber(),
     signedIn,
     missingScopes: missingScopes?.length ? missingScopes : undefined,
     scopeNote: missingScopes?.length ? "Some permissions were added since you signed in. Run sign_in again to grant them." : undefined,

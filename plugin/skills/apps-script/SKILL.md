@@ -41,7 +41,7 @@ Apps Script needs the user's one-time permission for what the script does (Sheet
 2. That first run is often all that's needed: menus, custom functions and triggers now work in the sheet.
 
 To run functions **from Claude** (`script_run`), the script also needs, once per script:
-- **The same Cloud project as this connector:** in the editor, **Project Settings → Google Cloud Platform (GCP) Project → Change project → project number `609335423064`** (Clude MCP).
+- **The same Cloud project as this connector:** in the editor, **Project Settings → Google Cloud Platform (GCP) Project → Change project**, then enter the project number. `google_setup` → `status` shows it as `cloudProjectNumber`.
 - **A deployment:** `script_deploy`.
 
 After that, `script_run` with `devMode: true` runs the latest code and returns the function's return value, or an error with the line number. Return useful values (e.g. `{processed: 12, skipped: 3}`) so results are visible.

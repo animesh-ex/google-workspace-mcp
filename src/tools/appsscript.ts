@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { script as scriptApi, type script_v1 } from "@googleapis/script";
-import { getAuthClient } from "../auth.js";
+import { getAuthClient, cloudProjectNumber } from "../auth.js";
 import { tool, drive, READ, WRITE, extractId } from "../util.js";
 
 const gas = () => scriptApi({ version: "v1", auth: getAuthClient() });
@@ -32,11 +32,12 @@ function explain(e: any): never {
   if (/User has not enabled the Apps Script API/i.test(msg)) {
     throw new Error(`${msg}\nFix: the signed-in account must turn on "Google Apps Script API" at https://script.google.com/home/usersettings, wait a minute, then retry.`);
   }
+  const project = cloudProjectNumber() ? `project number ${cloudProjectNumber()}` : "the project number of this connector's OAuth client";
   if (/Requested entity was not found/i.test(msg) && /run/i.test(e?.config?.url || "")) {
-    throw new Error(`${msg}\nFix: the script must (1) use this Cloud project — in the script editor: Project Settings → Google Cloud Platform (GCP) Project → Change project → enter project NUMBER 609335423064 (Clude MCP) — and (2) have an API executable deployment (call script_deploy).`);
+    throw new Error(`${msg}\nFix: the script must (1) use the same Cloud project as this connector — in the script editor: Project Settings → Google Cloud Platform (GCP) Project → Change project → enter ${project} — and (2) have an API executable deployment (call script_deploy).`);
   }
   if (/caller does not have permission/i.test(msg)) {
-    throw new Error(`${msg}\nFix: switch the script's GCP project to the same project as this connector's OAuth client (Project Settings → GCP Project → project number 609335423064), and make sure the signed-in account owns or edits the script.`);
+    throw new Error(`${msg}\nFix: switch the script's GCP project to the same project as this connector's OAuth client (Project Settings → GCP Project → ${project}), and make sure the signed-in account owns or edits the script.`);
   }
   throw new Error(msg);
 }

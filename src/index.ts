@@ -17,7 +17,7 @@ import { registerDialogflow } from "./tools/dialogflow.js";
 import { registerAppsScript } from "./tools/appsscript.js";
 
 const server = new McpServer(
-  { name: "google-workspace", version: "1.4.0" },
+  { name: "google-workspace", version: "1.4.1" },
   {
     instructions:
       "Google connector: Gmail (search/read/send/reply/drafts/attachments/labels), Drive (search/organize/upload/download/share), Docs, Sheets and Slides (create/read/edit/analyze), " +
