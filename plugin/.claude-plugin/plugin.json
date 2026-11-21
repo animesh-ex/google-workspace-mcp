@@ -1,12 +1,12 @@
 {
   "name": "google-workspace",
-  "version": "1.7.0",
-  "description": "Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Apps Script, Google Tag Manager, Google Analytics 4 and Google Ads for Claude: email with attachments, Docs/Sheets/Slides, Drive sharing, meeting scheduling and invites, Chat, contacts, business details and AI summaries from Maps, chatbot building, Apps Script automations for Sheets, website tracking audits and GTM setup, analytics reports and ad management.",
+  "version": "1.8.0",
+  "description": "Gmail, Google Drive, Docs, Sheets, Slides, Google Calendar, Google Chat, Google Contacts, Google Maps, Dialogflow, Apps Script, Google Tag Manager, Google Search Console, Google Merchant Center, Google Analytics 4 and Google Ads for Claude: email with attachments, Docs/Sheets/Slides, Drive sharing, meeting scheduling and invites, Chat, contacts, business details and AI summaries from Maps, chatbot building, Apps Script automations for Sheets, website tracking audits and GTM setup, SEO and Search Console, Google Shopping feed health, analytics reports and ad management.",
   "author": { "name": "animesh-ex" },
   "repository": "https://github.com/animesh-ex/google-workspace-mcp",
   "homepage": "https://github.com/animesh-ex/google-workspace-mcp",
   "license": "MIT",
-  "keywords": ["google", "gmail", "drive", "docs", "sheets", "slides", "workspace", "calendar", "chat", "maps", "contacts", "people", "dialogflow", "apps-script", "tag-manager", "gtm", "analytics", "ads", "mcp"],
+  "keywords": ["google", "gmail", "drive", "docs", "sheets", "slides", "workspace", "calendar", "chat", "maps", "contacts", "people", "dialogflow", "apps-script", "tag-manager", "gtm", "search-console", "seo", "merchant-center", "shopping", "analytics", "ads", "mcp"],
   "userConfig": {
     "google_maps_api_key": {
       "type": "string",

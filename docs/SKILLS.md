@@ -14,6 +14,8 @@ The source of each skill is in [`plugin/skills/<name>/SKILL.md`](../plugin/skill
 | [maps-business-research](#maps-business-research) | Business details, reviews, AI summaries, directions |
 | [apps-script](#apps-script) | Scripts and automations for Google Sheets |
 | [tag-manager](#tag-manager) | Website tracking audits and GTM configuration |
+| [search-console](#search-console) | Organic Google search performance and SEO |
+| [merchant-center](#merchant-center) | Google Shopping product health, performance and pricing |
 | [google-ads](#google-ads) | Ad performance reviews and safe changes |
 | [dialogflow](#dialogflow) | Building and testing chatbots |
 
@@ -146,6 +148,35 @@ It never places orders or enters payment or personal data on live sites.
 4. **Publish only on your explicit yes.** Rollback via `gtm_list_versions` + `gtm_publish`.
 
 **Example:** *"Audit example.com's tracking: read the dataLayer on product and cart pages, compare with GTM and GA4, and propose fixes. Don't publish anything yet."*
+
+---
+
+## search-console
+**Triggers:** SEO, Google organic traffic, rankings, queries or keywords, CTR, "why did organic traffic drop", indexing ("is this page indexed"), canonicals, sitemaps, rich results, SEO quick wins.
+
+**Workflow:**
+1. **Pick the property:** `gsc_list_sites`, preferring Domain properties.
+2. **Review:** `gsc_performance` with `compare: true` by date, query and page (device and country when useful), splitting **branded vs non-branded** queries with filters.
+3. **Diagnose drops:** impressions vs CTR, which pages lost clicks and when, then URL inspection of the biggest losers.
+4. **Quick wins:** `gsc_opportunities` finds striking-distance queries (positions 4–20), low CTR for the position (suggested new titles) and pages losing clicks.
+5. **Technical checks:** `gsc_inspect_url` for indexing state, Google vs declared canonical, crawl, mobile and rich results; `gsc_sitemaps` to list, submit or remove (with confirmation).
+6. **Combine:** with GA4 for on-site behavior of organic visitors, and Docs or Sheets for reports.
+
+**Example:** *"Compare Google search clicks for the last 28 days vs the previous 28 for non-brand queries, show which pages dropped, and list 10 quick wins."*
+
+---
+
+## merchant-center
+**Triggers:** Merchant Center, Google Shopping, product feed, disapproved or pending products, feed errors, free listings, Shopping product performance, price competitiveness, best sellers, data sources.
+
+**Workflow:**
+1. **Account and registration:** `merchant_list_accounts`, then `merchant_registration` (`status`, and `register` once with your OK).
+2. **Health audit:** `merchant_product_status` gives counts per destination and country and the top issues by products affected. `merchant_list_products` with `onlyWithIssues` shows the affected items. Root causes are split into **feed**, **website** and **account** fixes.
+3. **Performance:** `merchant_performance` by product, trend, brand, category, ads vs organic, or country. It flags high impressions with low clicks, and clicks without sales.
+4. **Pricing and market:** `merchant_price_competitiveness` (your price vs benchmark), plus `merchant_report` MCQL for click potential, best sellers and more.
+5. **Report:** prioritized actions. Product edits are left to the store's feed, so nothing is overwritten.
+
+**Example:** *"Audit our Merchant Center: how many products are disapproved, the top 5 issues and how to fix them, and which products get clicks but no conversions."*
 
 ---
 

@@ -15,7 +15,7 @@ How the plugin works, where things live, and how to extend it.
 ```
 
 - **The plugin** (`plugin/`) is what Claude installs. It has a manifest, an `.mcp.json` that starts the server, the **bundled server** (a single file with no dependencies to install), and **skills** (Markdown instructions).
-- **The server** is a [Model Context Protocol](https://modelcontextprotocol.io) server over stdio. It registers 130 tools with JSON-schema inputs (built with zod) and MCP annotations: `readOnlyHint`, plus `destructiveHint` for tools that change or remove things.
+- **The server** is a [Model Context Protocol](https://modelcontextprotocol.io) server over stdio. It registers 144 tools with JSON-schema inputs (built with zod) and MCP annotations: `readOnlyHint`, plus `destructiveHint` for tools that change or remove things.
 - **Authentication:**
   - **OAuth 2.0** for user data, using an installed-app flow with a loopback redirect on `127.0.0.1`. The refresh token is stored locally in `token.json` and refreshed access tokens are saved automatically.
   - **API key** for Maps.
@@ -42,6 +42,8 @@ How the plugin works, where things live, and how to extend it.
 | `src/tools/maps.ts` | Places API (New), Geocoding, Routes (REST and API key) |
 | `src/tools/appsscript.ts` | Apps Script API, with plain-language error fixes |
 | `src/tools/gtm.ts` | Tag Manager API and the website and `gtm.js` scanner |
+| `src/tools/searchconsole.ts` | Search Console API (search analytics with comparison, opportunities, URL inspection, sitemaps) |
+| `src/tools/merchant.ts` | Merchant API v1 (accounts and registration, products, issue resolution, reports via MCQL, data sources) |
 | `src/tools/analytics.ts` | GA4 Data and Admin APIs |
 | `src/tools/ads.ts` | Google Ads REST (GAQL search, mutates) |
 | `src/tools/dialogflow.ts` | Dialogflow ES (v2) and CX (v3), regional endpoints |

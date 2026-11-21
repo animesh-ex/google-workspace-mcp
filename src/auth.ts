@@ -34,6 +34,8 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/tagmanager.edit.containers", // GTM: edit workspaces, tags, triggers, variables
   "https://www.googleapis.com/auth/tagmanager.edit.containerversions", // GTM: create versions
   "https://www.googleapis.com/auth/tagmanager.publish", // GTM: publish versions
+  "https://www.googleapis.com/auth/webmasters", // Search Console: performance, URL inspection, sitemaps
+  "https://www.googleapis.com/auth/content", // Merchant Center (Merchant API): products, status, reports
 ];
 
 /**

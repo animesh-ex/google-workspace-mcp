@@ -1,6 +1,6 @@
 # Tool reference
 
-Generated from the plugin's tool definitions (version 1.7.0, 130 tools). Regenerate with `npm run docs`.
+Generated from the plugin's tool definitions (version 1.8.0, 144 tools). Regenerate with `npm run docs`.
 
 Every tool that takes a file, document, spreadsheet or presentation ID also accepts the full Google URL.
 

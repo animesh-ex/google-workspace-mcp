@@ -1,10 +1,10 @@
 # Google Workspace for Claude
 
-A Claude plugin and MCP server that connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Analytics 4 and Google Ads**. It's **130 tools and 10 skills** in one package.
+A Claude plugin and MCP server that connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Search Console, Google Merchant Center, Google Analytics 4 and Google Ads**. It's **144 tools and 12 skills** in one package.
 
 It runs on your own computer and signs in with your own Google account. Your credentials and tokens never leave your machine.
 
-- **Version:** 1.7.0 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
+- **Version:** 1.8.0 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
 - **Requires:** Node.js 20 or newer
 - **License:** MIT
 
@@ -13,8 +13,8 @@ It runs on your own computer and signs in with your own Google account. Your cre
 | Guide | What's in it |
 |---|---|
 | **[Setup guide](docs/SETUP.md)** | Step by step: Cloud project, APIs, consent screen, OAuth client, install, sign-in, and the extra steps for Chat, Apps Script, Maps, Ads, Tag Manager, Analytics and Dialogflow. Switching accounts, updating, uninstalling. |
-| **[Skills guide](docs/SKILLS.md)** | What each of the 10 skills does, its workflow, what it confirms with you, and example prompts. |
-| **[Tool reference](docs/TOOLS.md)** | All 130 tools with every parameter, its type, default and description (generated from the code). |
+| **[Skills guide](docs/SKILLS.md)** | What each of the 12 skills does, its workflow, what it confirms with you, and example prompts. |
+| **[Tool reference](docs/TOOLS.md)** | All 144 tools with every parameter, its type, default and description (generated from the code). |
 | **[Architecture and development](docs/ARCHITECTURE.md)** | How it works, repository layout, adding tools, releasing, security notes. |
 
 > **One account at a time:** every tool acts as the single Google account you signed in with. Emails, files, events and GTM changes are made as that account. See [Choosing or switching the Google account](docs/SETUP.md#choosing-or-switching-the-google-account).
@@ -48,6 +48,8 @@ It runs on your own computer and signs in with your own Google account. Your cre
 | **Apps Script** | "Write a script for this sheet that emails each customer their order status and marks the row as sent." "Add a custom formula that converts carats to grams." |
 | **Maps** | "Find jewelry stores in Surat with 4.5+ ratings, summarize what customers say, and put them in a sheet." "How long is the drive from the office to the airport at 6pm?" |
 | **Tag Manager** | "Audit the tracking on our website, read the dataLayer on the product and cart pages, and set up GA4 ecommerce events in GTM." "Why isn't GA4 recording page views?" |
+| **Search Console** | "Which queries and pages lost Google clicks this month, and why?" "Find SEO quick wins and check whether our ring pages are indexed." |
+| **Merchant Center** | "How many products are disapproved in Merchant Center and what are the top issues?" "Which products get Shopping clicks but no sales?" |
 | **Analytics** | "How did traffic by channel change versus last month?" |
 | **Ads** | "Review my Google Ads for the last 30 days and find wasted spend." "Add these search terms as negative keywords." |
 | **Dialogflow** | "Test my support bot with 20 customer questions and show me where it fails." "Turn this FAQ doc into bot intents." |
@@ -100,6 +102,8 @@ Once installed, just say **"connect Google"** (or run `/google-workspace:setup`)
    | Apps Script | Apps Script API (plus a per-user switch, step 4) |
    | Dialogflow | Dialogflow API |
    | Tag Manager | Tag Manager API |
+   | Search Console | Google Search Console API |
+   | Merchant Center | Merchant API (plus a one-time project registration) |
    | Analytics | Google Analytics Data API, Google Analytics Admin API |
    | Ads | Google Ads API (plus a developer token, step 6) |
    | Maps | Places API (New), Geocoding API, Routes API (plus an API key, step 5) |
@@ -139,7 +143,7 @@ Maps Platform uses an **API key** instead of sign-in, and the project needs **bi
    ```
 
 ### 7. Access to your data
-The signed-in Google account must itself have access to what you want Claude to use: the GTM containers (Publish permission to publish), the GA4 properties (GA4 Admin → Property access management), the Google Ads accounts, the Dialogflow project (role *Dialogflow API Client*, or *Admin* to edit intents), and any shared Drive files and calendars.
+The signed-in Google account must itself have access to what you want Claude to use: the GTM containers (Publish permission to publish), the Search Console properties, the Merchant Center account, the GA4 properties (GA4 Admin → Property access management), the Google Ads accounts, the Dialogflow project (role *Dialogflow API Client*, or *Admin* to edit intents), and any shared Drive files and calendars.
 
 ---
 
@@ -155,6 +159,8 @@ Skills teach Claude the workflow, not just the API calls. Claude loads the right
 | `calendar-scheduling` | Resolves names to emails, finds free slots for everyone, proposes 2–3 times, confirms, then creates the event with a Meet link and invites. Also handles rescheduling, guests, cancelling and RSVPs. |
 | `google-contacts` | Looks people up across your contacts, people you've emailed and the company directory. Adds, edits, groups, exports and cleans up contacts. |
 | `maps-business-research` | Finds businesses and pulls every detail: contact info, hours, price range, ratings, reviews, Google's AI summaries, amenities and photos. Writes profiles or competitor comparisons and exports to Sheets. Directions and travel times. |
+| `search-console` | Google organic search performance with period comparison and brand/non-brand splits, traffic-drop diagnosis, SEO quick wins (striking-distance queries, low-CTR titles, pages losing clicks), URL inspection and sitemaps. |
+| `merchant-center` | Product health audit (counts per destination and the top issues with fixes), affected products, Shopping performance (free listings vs ads), price competitiveness vs other sellers, best sellers and custom reports. Read-only on products; fixes go in your feed. |
 | `tag-manager` | Scans the website's tracking (GTM, GA4, Ads, pixels, consent), reads and records the live dataLayer in a browser, compares it with the GTM container and GA4, then configures tags, triggers and variables in a separate workspace, creates a version, and publishes only after you approve. Writes exact `dataLayer.push` code for any site changes. |
 | `apps-script` | Reads your sheet, writes reliable Apps Script (header-based, batched, never processes the same row twice), installs it on the sheet, and runs and debugs it. Includes patterns for emails, custom formulas, menus, triggers, sidebars and web apps. |
 | `dialogflow` | Inspects ES and CX bots, runs test conversations (question → intent → confidence → reply), and creates or improves intents, including from FAQ docs. |
@@ -219,6 +225,14 @@ Every tool accepts either an ID or a full Google URL. Create tools take an optio
 </details>
 
 <details>
+<summary><b>Search Console (5) · Merchant Center (9)</b></summary>
+
+**Search Console:** `gsc_list_sites`, `gsc_performance` (queries, pages, countries, devices, dates, search appearance; filters; period comparison), `gsc_opportunities`, `gsc_inspect_url`, `gsc_sitemaps` (list, submit, delete).
+
+**Merchant Center** (Merchant API v1): `merchant_list_accounts`, `merchant_registration` (one-time project registration), `merchant_product_status` (counts and top issues per destination and country), `merchant_list_products`, `merchant_get_product`, `merchant_performance` (clicks, impressions, conversions by product, date, brand, category, ads vs organic, country), `merchant_price_competitiveness`, `merchant_report` (any MCQL), `merchant_data_sources`.
+</details>
+
+<details>
 <summary><b>Google Analytics 4 (5) · Google Ads (10)</b></summary>
 
 **GA4:** `ga_list_properties`, `ga_overview` (users, sessions, engagement, key events and revenue by channel, source, campaign, page, country, device or date), `ga_run_report` (any dimensions and metrics, filters, period comparison), `ga_realtime`, `ga_get_metadata`.
@@ -250,6 +264,8 @@ Every tool accepts either an ID or a full Google URL. Create tools take an optio
 | `script.send_mail`, `script.external_request`, `script.scriptapp`, `script.container.ui` | Needed by scripts that run through the API |
 | `dialogflow` | Dialogflow ES and CX agents |
 | `tagmanager.readonly`, `tagmanager.edit.containers`, `tagmanager.edit.containerversions`, `tagmanager.publish` | Read, edit, version and publish GTM containers |
+| `webmasters` | Search Console performance, URL inspection and sitemaps |
+| `content` | Merchant Center via the Merchant API |
 | `analytics.readonly` | GA4 reports (read-only) |
 | `adwords` | Google Ads reporting and changes |
 
@@ -320,6 +336,8 @@ Everything is stored in `~/.google-workspace-mcp/`, which on Windows is `C:\User
 | Maps: "isn't configured" or "API key not valid" | Add a key with billing enabled (Setup step 5). |
 | Ads: "DEVELOPER_TOKEN_NOT_APPROVED" | The token has Test access only; apply for Basic access. |
 | GTM: "The caller does not have permission" | Give the signed-in account access to the container in GTM → Admin → User Management (Publish to publish). |
+| Merchant Center: "… not registered …" | Register this Cloud project with the Merchant Center account once (`merchant_registration` → `register`). |
+| Search Console: site missing from `gsc_list_sites` | Add the signed-in account in Search Console → Settings → Users and permissions. |
 | Dialogflow: "No DesignTimeAgent found" | Wrong project ID, or the agent is CX (use the `dialogflow_cx_*` tools). |
 | Signed out every 7 days | The OAuth app is External and in Testing; use Internal (Workspace) or publish the app. |
 

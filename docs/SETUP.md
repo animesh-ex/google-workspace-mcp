@@ -54,6 +54,8 @@ Go to **APIs & Services → Library**, search for each API and click **Enable**.
 | Contacts | People API | `contacts_*` |
 | Apps Script | Apps Script API | `script_*` (plus a per-user switch, below) |
 | Tag Manager | Tag Manager API | `gtm_*` (the website scan works without it) |
+| Search Console | Google Search Console API | `gsc_*` |
+| Merchant Center | Merchant API | `merchant_*` (plus a one-time registration, below) |
 | Analytics | Google Analytics Data API, Google Analytics Admin API | `ga_*` |
 | Google Ads | Google Ads API | `ads_*` (plus a developer token, below) |
 | Dialogflow | Dialogflow API | `dialogflow_*` |
@@ -189,6 +191,17 @@ Some fields, such as Google's AI summaries of places, are only available for som
    - **Publish** to publish
 3. Test: "list my GTM containers".
 4. To read the **live dataLayer**, Claude also needs a browser it can drive: **Claude in Chrome** or the Claude app's built-in browser. `gtm_scan_website` works without one.
+
+### Google Search Console
+1. Enable the **Google Search Console API** (step 2).
+2. The signed-in account needs access to the property: **Search Console → Settings → Users and permissions** (*Full* to submit sitemaps, *Restricted* is enough to read).
+3. Test: "list my Search Console sites".
+
+### Google Merchant Center
+1. Enable the **Merchant API** (step 2). The older Content API for Shopping was retired in 2026.
+2. The signed-in account needs access to the Merchant Center account (**Settings → People and access**). Use *Admin* for the registration step.
+3. **One-time registration:** the Merchant API requires your Cloud project to be registered with the Merchant Center account. Ask Claude to "register the project with Merchant Center" (`merchant_registration` → `register` with your email). Claude checks with you first.
+4. Test: "show my Merchant Center product status".
 
 ### Google Analytics 4
 1. Enable the **Data** and **Admin** APIs (step 2).

@@ -1,10 +1,10 @@
 # Google Workspace for Claude
 
-Version 1.7.0 · 130 tools · 10 skills
+Version 1.8.0 · 144 tools · 12 skills
 
 Guides: [Setup](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SETUP.md) · [Skills](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/SKILLS.md) · [Tool reference](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/TOOLS.md) · [Architecture](https://github.com/animesh-ex/google-workspace-mcp/blob/main/docs/ARCHITECTURE.md)
 
-Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Analytics 4 and Google Ads**. It runs on your computer, and your credentials never leave it.
+Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Search Console, Google Merchant Center, Google Analytics 4 and Google Ads**. It runs on your computer, and your credentials never leave it.
 
 ## What it does
 - **Gmail:** search, read, send and reply (with attachments from your computer or Drive), drafts, labels.
@@ -17,11 +17,13 @@ Connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Ca
 - **Apps Script:** generate scripts for Google Sheets (automations, custom formulas, menus, triggers), install them on the sheet, deploy, run and debug.
 - **Dialogflow:** inspect and test ES and CX chatbots; create and improve intents.
 - **Google Tag Manager:** scan a website's tracking, read the live dataLayer, audit the container, set up GA4 and ecommerce tags, triggers and variables, version and publish (after you approve).
+- **Search Console:** Google search clicks, impressions, CTR and rankings by query and page with period comparison, SEO quick wins, URL inspection, sitemaps.
+- **Merchant Center:** product health and top feed issues, Shopping performance (free listings and ads), price competitiveness, custom reports.
 - **Google Analytics 4:** traffic and conversion overviews, custom reports with period comparison, realtime.
 - **Google Ads:** campaign, keyword, ad and search-term performance with ROAS, GAQL queries, negative keywords, pause/enable, budgets.
 
 ## Skills
-`setup` · `settings` · `google-workspace` · `calendar-scheduling` · `google-contacts` · `maps-business-research` · `apps-script` · `tag-manager` · `dialogflow` · `google-ads`
+`setup` · `settings` · `google-workspace` · `calendar-scheduling` · `google-contacts` · `maps-business-research` · `apps-script` · `tag-manager` · `search-console` · `merchant-center` · `dialogflow` · `google-ads`
 
 Claude picks the right skill from what you ask. It confirms before sending email or Chat messages, sharing files, inviting or cancelling meeting guests, running scripts that change data, publishing a GTM container, or making any Google Ads change.
 

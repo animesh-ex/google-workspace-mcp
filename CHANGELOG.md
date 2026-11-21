@@ -2,6 +2,12 @@
 
 All notable changes to the Google Workspace plugin for Claude.
 
+## 1.8.0 — 2026-11-21
+- **Google Search Console** (5 tools): list properties; performance by query, page, country, device, date or search appearance with filters and previous-period comparison; SEO opportunities (striking-distance queries, low CTR for position, pages losing clicks); URL inspection (indexing, canonical, crawl, mobile, rich results); sitemaps (list, submit, delete).
+- **Google Merchant Center** (9 tools, Merchant API v1): accounts; one-time Cloud project registration; product status counts and top issues per destination and country; products with issues; single product details; Shopping performance (free listings and ads); price competitiveness vs benchmark; any MCQL report; data sources. Read-only on products.
+- **Skills:** `search-console` and `merchant-center`.
+- **New scopes:** `webmasters`, `content`.
+
 ## 1.7.0 — 2026-11-21
 - **Settings page for API keys:** `google_setup` → `open_settings` (or "open settings", `/google-workspace:settings`) opens a private local page where you enter, change or remove the Google Maps API key, Google Ads developer token and manager account ID. Keys go straight to `~/.google-workspace-mcp/` and never pass through the chat.
   - **Security:** the page runs on 127.0.0.1 only, behind a random one-time link that expires after 10 minutes, and blocks wrong Host headers (DNS rebinding) and cross-site posts. It sends no-store, frame-deny and strict CSP headers.
