@@ -2,6 +2,11 @@
 
 All notable changes to the Google Workspace plugin for Claude.
 
+## 1.5.0 — 2026-11-21
+- **Google Tag Manager** (13 tools): scan any website's tracking (GTM containers and their live contents, GA4/Ads/UA IDs, consent mode and platforms, other pixels, inline dataLayer); read containers; create workspaces; enable built-in variables; add Data Layer Variables, Custom Event triggers, and the Google tag plus GA4 event tags (with ecommerce); raw create/update/delete; create versions; publish; list versions for rollback.
+- **`tag-manager` skill:** scan → read and record the live dataLayer in a browser → compare with GTM and GA4 against the GA4 ecommerce schema → configure in a separate workspace → version → preview → publish only on approval.
+- New scopes: `tagmanager.readonly`, `tagmanager.edit.containers`, `tagmanager.edit.containerversions`, `tagmanager.publish`.
+
 ## 1.4.1 — 2026-11-21
 - Apps Script: the Cloud project number in setup hints is now read from your own OAuth client instead of being fixed, and `google_setup` → `status` reports it as `cloudProjectNumber`.
 - Full documentation rewrite: example prompts, a setup guide per service, skills, the tool reference, permissions, configuration, safety and troubleshooting.

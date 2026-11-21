@@ -1,10 +1,10 @@
 # Google Workspace for Claude
 
-A Claude plugin and MCP server that connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Analytics 4 and Google Ads**. It's **117 tools and 8 skills** in one package.
+A Claude plugin and MCP server that connects Claude to your Google account: **Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, Contacts, Maps, Apps Script, Dialogflow, Google Tag Manager, Google Analytics 4 and Google Ads**. It's **130 tools and 9 skills** in one package.
 
 It runs on your own computer and signs in with your own Google account. Your credentials and tokens never leave your machine.
 
-- **Version:** 1.4.1 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
+- **Version:** 1.5.0 · [Changelog](CHANGELOG.md) · [Latest release](https://github.com/animesh-ex/google-workspace-mcp/releases/latest)
 - **Requires:** Node.js 20 or newer
 - **License:** MIT
 
@@ -36,6 +36,7 @@ It runs on your own computer and signs in with your own Google account. Your cre
 | **Sheets** | "Analyze revenue by region in this sheet and add a chart." |
 | **Apps Script** | "Write a script for this sheet that emails each customer their order status and marks the row as sent." "Add a custom formula that converts carats to grams." |
 | **Maps** | "Find jewelry stores in Surat with 4.5+ ratings, summarize what customers say, and put them in a sheet." "How long is the drive from the office to the airport at 6pm?" |
+| **Tag Manager** | "Audit the tracking on our website, read the dataLayer on the product and cart pages, and set up GA4 ecommerce events in GTM." "Why isn't GA4 recording page views?" |
 | **Analytics** | "How did traffic by channel change versus last month?" |
 | **Ads** | "Review my Google Ads for the last 30 days and find wasted spend." "Add these search terms as negative keywords." |
 | **Dialogflow** | "Test my support bot with 20 customer questions and show me where it fails." "Turn this FAQ doc into bot intents." |
@@ -87,6 +88,7 @@ Once installed, just say **"connect Google"** (or run `/google-workspace:setup`)
    | Contacts | People API |
    | Apps Script | Apps Script API (plus a per-user switch, step 4) |
    | Dialogflow | Dialogflow API |
+   | Tag Manager | Tag Manager API |
    | Analytics | Google Analytics Data API, Google Analytics Admin API |
    | Ads | Google Ads API (plus a developer token, step 6) |
    | Maps | Places API (New), Geocoding API, Routes API (plus an API key, step 5) |
@@ -126,7 +128,7 @@ Maps Platform uses an **API key** instead of sign-in, and the project needs **bi
    ```
 
 ### 7. Access to your data
-The signed-in Google account must itself have access to what you want Claude to use: the GA4 properties (GA4 Admin → Property access management), the Google Ads accounts, the Dialogflow project (role *Dialogflow API Client*, or *Admin* to edit intents), and any shared Drive files and calendars.
+The signed-in Google account must itself have access to what you want Claude to use: the GTM containers (Publish permission to publish), the GA4 properties (GA4 Admin → Property access management), the Google Ads accounts, the Dialogflow project (role *Dialogflow API Client*, or *Admin* to edit intents), and any shared Drive files and calendars.
 
 ---
 
@@ -141,6 +143,7 @@ Skills teach Claude the workflow, not just the API calls. Claude loads the right
 | `calendar-scheduling` | Resolves names to emails, finds free slots for everyone, proposes 2–3 times, confirms, then creates the event with a Meet link and invites. Also handles rescheduling, guests, cancelling and RSVPs. |
 | `google-contacts` | Looks people up across your contacts, people you've emailed and the company directory. Adds, edits, groups, exports and cleans up contacts. |
 | `maps-business-research` | Finds businesses and pulls every detail: contact info, hours, price range, ratings, reviews, Google's AI summaries, amenities and photos. Writes profiles or competitor comparisons and exports to Sheets. Directions and travel times. |
+| `tag-manager` | Scans the website's tracking (GTM, GA4, Ads, pixels, consent), reads and records the live dataLayer in a browser, compares it with the GTM container and GA4, then configures tags, triggers and variables in a separate workspace, creates a version, and publishes only after you approve. Writes exact `dataLayer.push` code for any site changes. |
 | `apps-script` | Reads your sheet, writes reliable Apps Script (header-based, batched, never processes the same row twice), installs it on the sheet, and runs and debugs it. Includes patterns for emails, custom formulas, menus, triggers, sidebars and web apps. |
 | `dialogflow` | Inspects ES and CX bots, runs test conversations (question → intent → confidence → reply), and creates or improves intents, including from FAQ docs. |
 | `google-ads` | Structured performance review (campaigns → keywords → search terms → ads), wasted-spend analysis and recommendations. Makes changes only after you confirm, with an optional dry run. |
@@ -198,6 +201,12 @@ Every tool accepts either an ID or a full Google URL. Create tools take an optio
 </details>
 
 <details>
+<summary><b>Google Tag Manager (13)</b></summary>
+
+`gtm_scan_website` (tracking IDs, pixels, consent, inline dataLayer and the live container's contents from any URL), `gtm_list_containers`, `gtm_get_container` (all tags, triggers, variables and the live version), `gtm_workspace` (list, create, status), `gtm_enable_builtin_variables`, `gtm_add_datalayer_variables`, `gtm_add_event_trigger`, `gtm_add_ga4_tags` (Google tag plus GA4 event tags with ecommerce), `gtm_upsert` (any tag, trigger or variable as raw JSON), `gtm_delete`, `gtm_create_version`, `gtm_publish`, `gtm_list_versions`.
+</details>
+
+<details>
 <summary><b>Google Analytics 4 (5) · Google Ads (10)</b></summary>
 
 **GA4:** `ga_list_properties`, `ga_overview` (users, sessions, engagement, key events and revenue by channel, source, campaign, page, country, device or date), `ga_run_report` (any dimensions and metrics, filters, period comparison), `ga_realtime`, `ga_get_metadata`.
@@ -228,6 +237,7 @@ Every tool accepts either an ID or a full Google URL. Create tools take an optio
 | `script.projects`, `script.deployments`, `script.processes` | Create, deploy and monitor Apps Script projects |
 | `script.send_mail`, `script.external_request`, `script.scriptapp`, `script.container.ui` | Needed by scripts that run through the API |
 | `dialogflow` | Dialogflow ES and CX agents |
+| `tagmanager.readonly`, `tagmanager.edit.containers`, `tagmanager.edit.containerversions`, `tagmanager.publish` | Read, edit, version and publish GTM containers |
 | `analytics.readonly` | GA4 reports (read-only) |
 | `adwords` | Google Ads reporting and changes |
 
@@ -260,7 +270,8 @@ Everything is stored in `~/.google-workspace-mcp/`, which on Windows is `C:\User
 ## Safety
 
 - **Claude asks first.** The skills tell Claude to confirm before anything that reaches other people or costs money: sending email or Chat messages, sharing files, inviting or cancelling meeting guests, running scripts that send mail or change data, and any Google Ads change.
-- **Tool hints.** Tools that change or remove things are marked with MCP `destructiveHint`, so clients can ask before running them. Consider keeping `gmail_send`, `gmail_reply`, `chat_send_message`, `drive_share`, `calendar_create_event`, `calendar_delete_event`, `script_run`, `contacts_delete`, `dialogflow_delete_intent`, `ads_set_status`, `ads_set_campaign_budget` and `ads_add_negative_keywords` on "ask" in Claude Code.
+- **Tool hints.** Tools that change or remove things are marked with MCP `destructiveHint`, so clients can ask before running them. Consider keeping `gmail_send`, `gmail_reply`, `chat_send_message`, `drive_share`, `calendar_create_event`, `calendar_delete_event`, `script_run`, `contacts_delete`, `dialogflow_delete_intent`, `gtm_publish`, `ads_set_status`, `ads_set_campaign_budget` and `ads_add_negative_keywords` on "ask" in Claude Code.
+- **GTM changes are staged.** Claude makes GTM changes in a separate workspace and creates a version; nothing goes live until `gtm_publish`, which the skill only runs after you approve. Earlier versions can be republished to roll back.
 - **Recoverable deletes.** Drive deletes go to the trash, and Gmail trash is recoverable for 30 days.
 - **Ads dry runs.** Google Ads changes take effect immediately; every Ads change tool supports `validateOnly: true` for a dry run.
 - **Nothing leaves your machine.** No telemetry; credentials stay in your config folder.
@@ -279,6 +290,7 @@ Everything is stored in `~/.google-workspace-mcp/`, which on Windows is `C:\User
 | Apps Script: "Requested entity was not found" on `script_run` | Set the script's GCP project and deploy it (Setup step 4). |
 | Maps: "isn't configured" or "API key not valid" | Add a key with billing enabled (Setup step 5). |
 | Ads: "DEVELOPER_TOKEN_NOT_APPROVED" | The token has Test access only; apply for Basic access. |
+| GTM: "The caller does not have permission" | Give the signed-in account access to the container in GTM → Admin → User Management (Publish to publish). |
 | Dialogflow: "No DesignTimeAgent found" | Wrong project ID, or the agent is CX (use the `dialogflow_cx_*` tools). |
 | Signed out every 7 days | The OAuth app is External and in Testing; use Internal (Workspace) or publish the app. |
 

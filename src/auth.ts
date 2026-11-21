@@ -30,6 +30,10 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/script.external_request",
   "https://www.googleapis.com/auth/script.scriptapp",
   "https://www.googleapis.com/auth/script.container.ui",
+  "https://www.googleapis.com/auth/tagmanager.readonly", // GTM: read containers
+  "https://www.googleapis.com/auth/tagmanager.edit.containers", // GTM: edit workspaces, tags, triggers, variables
+  "https://www.googleapis.com/auth/tagmanager.edit.containerversions", // GTM: create versions
+  "https://www.googleapis.com/auth/tagmanager.publish", // GTM: publish versions
 ];
 
 export const CONFIG_DIR =

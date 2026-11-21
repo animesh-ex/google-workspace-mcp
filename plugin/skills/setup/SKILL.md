@@ -13,7 +13,7 @@ Walk the user through connecting the plugin, one step at a time, in plain langua
    - If `downloadedClientJsonFound` has a path, say so and call `google_setup` with `action: "import_credentials"`.
    - Otherwise explain how to create one, then wait for the user:
      1. Open https://console.cloud.google.com/ and create or pick a project.
-     2. APIs & Services → Library: enable Gmail API, Google Drive API, Google Docs API, Google Sheets API, Google Slides API, Google Calendar API, Google Chat API, People API, Dialogflow API, Apps Script API, Google Analytics Data API, Google Analytics Admin API and Google Ads API (skip any they don't need). For Maps also enable Places API (New), Geocoding API and Routes API.
+     2. APIs & Services → Library: enable Gmail API, Google Drive API, Google Docs API, Google Sheets API, Google Slides API, Google Calendar API, Google Chat API, People API, Dialogflow API, Apps Script API, Tag Manager API, Google Analytics Data API, Google Analytics Admin API and Google Ads API (skip any they don't need). For Maps also enable Places API (New), Geocoding API and Routes API.
      3. OAuth consent screen: for a Google Workspace organization choose **Internal**; otherwise choose External and add their account under Test users.
      4. Credentials → Create credentials → OAuth client ID → type **Desktop app** → Create → Download JSON. Leave the `client_secret_*.json` in Downloads or give its path.
 4. **Sign in** (not signed in, or `missingScopes` listed): call `google_setup` with `action: "sign_in"`. Tell the user a browser tab opens, to pick the Google account Claude should use, that an "unverified app" warning is expected for their own app (choose Continue), and that they have 5 minutes.
